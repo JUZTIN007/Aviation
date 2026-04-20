@@ -4,15 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight 0425 | The Final Odyssey</title>
-    
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() {
-            // Your Public Key correctly integrated
-            emailjs.init("DKKTNAP9O1JwQxxLw");
-        })();
-    </script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
@@ -30,14 +21,12 @@
         p.poetic { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.3rem; line-height: 1.6; color: #ccc; }
         .alt-label { font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--neon); letter-spacing: 5px; }
 
-        /* Hangar Grid */
         .hangar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
         .box-item { font-size: 70px; cursor: pointer; transition: 0.4s; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid #333; text-align: center; }
         .box-item:hover { transform: scale(1.1) rotate(5deg); border-color: var(--gold); background: rgba(197, 160, 89, 0.1); }
 
-        /* Quiz Overlay */
         #quiz-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; align-items: center; justify-content: center; text-align: center; }
-        .quiz-card { padding: 40px; border: 1px solid var(--gold); border-radius: 20px; max-width: 500px; background: #050508; margin: 10px; }
+        .quiz-card { padding: 40px; border: 1px solid var(--gold); border-radius: 20px; max-width: 500px; background: #050508; }
         .quiz-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: white; font-size: 1.5rem; text-align: center; outline: none; margin: 20px 0; width: 100%; font-family: 'JetBrains Mono'; }
         
         #confirmation { display: none; margin-top: 30px; border: 2px solid #28a745; padding: 30px; background: rgba(40, 167, 169, 0.1); border-radius: 15px; text-align: center; }
@@ -60,14 +49,14 @@
         <div class="content-card">
             <span class="alt-label">LOG 01 // 35,000 FT</span>
             <h1>Pilot's Soul.</h1>
-            <p class="poetic">"Whenever you talk about aviation, your eyes don't just light up; they ignite. Watching you chase your dreams is my favorite view."</p>
+            <p class="poetic">"Whenever you talk about aviation, your eyes ignite. Watching you chase your dreams is my favorite view."</p>
         </div>
         <div class="monitor"><img src="photo1.jpg" alt="Moment 1"></div>
     </section>
 
     <section style="flex-direction: row-reverse;">
         <div class="content-card">
-            <span class="alt-label">LOG 02 // THE TOY GARAGE</span>
+            <span class="alt-label">LOG 02 // TOY GARAGE</span>
             <h1>Pure & Playful.</h1>
             <p class="poetic">"Never lose that childish spark for Hot Wheels. In a world rushing to be serious, you are the most authentic soul I know."</p>
         </div>
@@ -78,7 +67,7 @@
         <div class="content-card">
             <span class="alt-label">LOG 03 // HIDDEN DEPTHS</span>
             <h1>Silent Strength.</h1>
-            <p class="poetic">"You worry you talk too much, but your voice is the only frequency I want to tune into. Behind that smile, you're stronger than you know."</p>
+            <p class="poetic">"Behind that smile, you're stronger than you know. Your voice is the only frequency I want to tune into."</p>
         </div>
         <div class="monitor"><img src="photo3.jpg" alt="Moment 3"></div>
     </section>
@@ -87,7 +76,7 @@
         <div class="content-card" style="text-align: center; max-width: 800px;">
             <span class="alt-label">FINAL DESTINATION</span>
             <h1>The Hangar</h1>
-            <p>Pick a gift box. A challenge awaits to clear your landing.</p>
+            <p>Pick a gift box and solve the tricky clearance quiz.</p>
             <div class="hangar-grid">
                 <div class="box-item" onclick="startQuiz('RC Car')">🎁</div>
                 <div class="box-item" onclick="startQuiz('Teddy & Rose')">🎁</div>
@@ -103,10 +92,15 @@
         </div>
     </section>
 
+    <form id="automated-form" action="https://formspree.io/f/sree24698@gmail.com" method="POST" style="display:none;">
+        <input type="text" name="Chosen Gift" id="form-gift">
+        <input type="text" name="Message" value="A's Juztin, she locked her birthday choice!">
+    </form>
+
     <div id="quiz-overlay">
         <div class="quiz-card">
             <h2 style="color:var(--gold);">Clearance Quiz</h2>
-            <p>I have wheels but never fly, I have wings but I'm not a bird. What am I?</p>
+            <p>I have wheels but never fly, I have wings but I'm not a bird. I am your passion. What am I?</p>
             <input type="text" id="quiz-answer" class="quiz-input" placeholder="Type answer...">
             <button onclick="checkAnswer()" style="background:var(--gold); border:none; padding:10px 30px; font-weight:bold; cursor:pointer; border-radius:5px;">SUBMIT CLEARANCE</button>
         </div>
@@ -119,37 +113,34 @@
         });
 
         let selectedGift = "";
-
         function startQuiz(gift) {
             selectedGift = gift;
             document.getElementById('quiz-overlay').style.display = 'flex';
         }
 
         function checkAnswer() {
-            const ans = document.getElementById('quiz-answer').value.toLowerCase().trim();
-            if(ans === "hot wheels") {
+            if(document.getElementById('quiz-answer').value.toLowerCase().trim() === "hot wheels") {
                 document.getElementById('quiz-overlay').style.display = 'none';
                 sendNotification(selectedGift);
-            } else { alert("Clearance Denied! Think like the girl who loves small cars..."); }
+            } else { alert("Clearance Denied! Think about your tiny cars..."); }
         }
 
         function sendNotification(gift) {
-            const serviceID = "service_ew6ps2o"; 
-            const templateID = "template_ovc077e"; 
+            const form = document.getElementById('automated-form');
+            document.getElementById('form-gift').value = gift;
+            
+            // Automated Post via Formspree
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            });
 
-            const params = {
-                gift_name: gift,
-                to_email: "sree24698@gmail.com"
-            };
-
-            emailjs.send(serviceID, templateID, params)
-                .then(() => {
-                    document.querySelector('.hangar-grid').style.display = 'none';
-                    document.getElementById('final-choice-text').innerText = `Target Locked: ${gift}`;
-                    document.getElementById('confirmation').style.display = 'block';
-                }, (err) => {
-                    alert("System Link Failure. Please alert Juztin!");
-                });
+            // UI Update
+            document.querySelector('.hangar-grid').style.display = 'none';
+            document.getElementById('final-choice-text').innerText = `Target Locked: ${gift}`;
+            document.getElementById('confirmation').style.display = 'block';
+            gsap.from("#confirmation", { y: 30, opacity: 0, duration: 1 });
         }
     </script>
 </body>
