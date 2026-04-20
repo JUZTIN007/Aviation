@@ -3,151 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | Full Interaction</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Playfair+Display:ital,wght@1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <title>Flight 0425 | The Final Odyssey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gold: #c5a059; --dark: #010208; --neon: #00f3ff; --action: #ff0055; }
-        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+        :root { --neon: #00f3ff; --gold: #c5a059; --dark: #010208; --red: #ff3b3b; }
+        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh; -webkit-tap-highlight-color: transparent; }
 
-        /* 3D Atmosphere & Moving Clouds */
-        #sky-canvas { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%); z-index: -2; }
-        .cloud { position: fixed; font-size: 100px; opacity: 0.1; z-index: -1; animation: drift 20s linear infinite; top: var(--top); }
-        @keyframes drift { from { right: -20%; } to { right: 120%; } }
+        /* 3D Moving Atmosphere */
+        #sky-v8 { position: fixed; width: 110%; height: 110%; top: -5%; left: -5%; background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%); z-index: -2; transition: transform 0.2s ease-out; }
+        .cloud-v8 { position: absolute; font-size: 100px; opacity: 0.1; z-index: -1; animation: drift 25s linear infinite; }
+        @keyframes drift { from { left: 110%; } to { left: -20%; } }
 
-        /* CONSTANT FLYING PLANE */
-        .plane-anim { position: fixed; top: 30%; left: -150px; font-size: 60px; z-index: 100; filter: drop-shadow(0 0 20px var(--neon)); animation: fly-cycle 15s linear infinite; pointer-events: none; }
-        @keyframes fly-cycle {
-            0% { left: -150px; transform: translateY(0) rotate(10deg); }
-            50% { transform: translateY(-100px) rotate(0deg); }
-            100% { left: 110%; transform: translateY(50px) rotate(-10deg); }
-        }
+        /* CONSTANT FLYING PLANE ICON */
+        .plane-v8 { position: fixed; top: 40%; left: -100px; font-size: 45px; z-index: 50; filter: drop-shadow(0 0 15px var(--neon)); animation: fly 12s linear infinite; }
+        @keyframes fly { 0% { left: -100px; transform: rotate(10deg); } 100% { left: 110%; transform: rotate(-10deg); } }
 
-        /* Cockpit Interaction Panels */
-        .hud-line { position: fixed; border: 1px solid rgba(0, 243, 255, 0.1); pointer-events: none; z-index: 10; }
-        .hud-v { width: 1px; height: 100vh; left: 30px; }
-        .hud-h { height: 1px; width: 100vw; top: 30px; }
+        /* HUD Cockpit UI */
+        .hud-top { position: fixed; top: 15px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; font-size: 11px; color: var(--neon); letter-spacing: 2px; font-weight: bold; }
+        .hud-line { position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); z-index: 101; transition: 0.8s; }
 
-        section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 25px; text-align: center; position: relative; opacity: 0; transform: translateY(50px); transition: 1.5s all ease; }
-        section.visible { opacity: 1; transform: translateY(0); }
+        section { height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 0 25px; text-align: center; }
+        section.active { display: flex; animation: slideIn 0.8s forwards; }
+        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* Story Frames */
-        .monitor-v5 { background: rgba(0, 0, 0, 0.9); border: 3px solid var(--neon); padding: 15px; border-radius: 12px; box-shadow: 0 0 50px rgba(0, 243, 255, 0.3); margin-bottom: 25px; max-width: 320px; position: relative; }
-        .monitor-v5 img { width: 100%; border-radius: 8px; display: block; filter: contrast(1.1); }
-        .monitor-v5::before { content: "DATA_FEED: SECURED"; position: absolute; top: -20px; left: 0; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--neon); letter-spacing: 2px; }
+        /* Image Display with Scanner Effect */
+        .monitor-v8 { width: 100%; max-width: 320px; border: 3px solid var(--neon); border-radius: 12px; position: relative; margin-bottom: 20px; background: #000; box-shadow: 0 0 40px rgba(0, 243, 255, 0.3); overflow: hidden; }
+        .monitor-v8 img { width: 100%; display: block; filter: contrast(1.1); }
+        .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); animation: scan 3s linear infinite; opacity: 0.6; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; color: var(--neon); letter-spacing: 5px; text-transform: uppercase; }
-        .poetic { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.3rem; line-height: 1.7; color: #eee; margin-top: 20px; }
+        h1 { font-family: 'Orbitron'; font-size: 1.6rem; color: var(--neon); letter-spacing: 4px; margin: 10px 0; text-shadow: 0 0 10px var(--neon); }
+        .terminal-txt { font-family: 'JetBrains Mono'; font-size: 0.95rem; color: #ccc; min-height: 80px; margin: 15px 0; line-height: 1.6; max-width: 500px; }
 
-        /* THE HANGAR - 4 SEALED BOXES */
-        .hangar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 480px; margin-top: 50px; }
-        .sealed-box { background: rgba(255, 255, 255, 0.05); border: 2px solid #333; border-radius: 20px; padding: 40px 0; cursor: pointer; transition: 0.4s; position: relative; overflow: hidden; }
-        .sealed-box:hover { border-color: var(--neon); background: rgba(0, 243, 255, 0.1); transform: translateY(-10px) scale(1.05); }
-        .sealed-box span { font-size: 60px; display: block; margin-bottom: 15px; filter: grayscale(1); }
-        .sealed-box label { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--gold); letter-spacing: 2px; }
-        .sealed-box.active span { filter: grayscale(0); }
+        /* BUTTONS */
+        .btn-v8 { background: none; border: 1px solid var(--neon); color: var(--neon); padding: 12px 30px; font-family: 'Orbitron'; font-size: 0.8rem; cursor: pointer; border-radius: 5px; box-shadow: 0 0 10px rgba(0,243,255,0.2); transition: 0.3s; }
+        .btn-v8:active { background: var(--neon); color: #000; }
+
+        /* THE HANGAR - 4 BOXES */
+        .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; margin-top: 30px; }
+        .box-unit { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; border-radius: 20px; padding: 35px 0; cursor: pointer; transition: 0.4s; position: relative; }
+        .box-unit:hover { border-color: var(--neon); background: rgba(0, 243, 255, 0.1); transform: translateY(-5px); }
+        .box-unit span { font-size: 50px; display: block; margin-bottom: 10px; }
+        .box-unit label { font-family: 'Orbitron'; font-size: 9px; color: var(--gold); }
 
         /* TASK POPUP */
         #task-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 2000; align-items: center; justify-content: center; padding: 25px; }
-        .task-card { background: #05080a; border: 3px solid var(--neon); padding: 50px 30px; border-radius: 30px; text-align: center; max-width: 420px; box-shadow: 0 0 60px var(--neon); }
-        .task-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: white; font-size: 1.8rem; text-align: center; width: 100%; margin: 30px 0; outline: none; font-family: 'JetBrains Mono'; }
-        .task-btn { background: var(--neon); color: black; border: none; padding: 15px 45px; font-weight: bold; border-radius: 8px; cursor: pointer; font-family: 'Orbitron'; }
+        .task-card { background: #05080a; border: 3px solid var(--neon); padding: 50px 30px; border-radius: 30px; text-align: center; max-width: 400px; box-shadow: 0 0 60px var(--neon); }
+        .task-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: #fff; font-size: 1.6rem; text-align: center; width: 100%; outline: none; margin: 25px 0; }
 
-        #final-reveal { display: none; margin-top: 50px; border: 3px dashed var(--gold); padding: 40px; border-radius: 30px; background: rgba(197, 160, 89, 0.15); backdrop-filter: blur(10px); }
+        #final-msg { display: none; margin-top: 40px; border: 3px dashed var(--gold); padding: 30px; background: rgba(197, 160, 89, 0.15); border-radius: 25px; backdrop-filter: blur(10px); }
     </style>
 </head>
 <body>
 
-    <div id="sky-canvas"></div>
-    <div class="hud-line hud-v"></div>
-    <div class="hud-line hud-h"></div>
-    <div class="plane-anim">✈️</div>
+    <div id="sky-v8"></div>
+    <div class="hud-top">
+        <span>ALT: <span id="alt-val">0</span> FT</span>
+        <span>SPD: <span id="spd-val">0</span> KTS</span>
+    </div>
+    <div class="hud-line" id="p-line"></div>
+    <div class="plane-v8">✈️</div>
 
-    <section id="intro">
-        <div style="font-family:'JetBrains Mono'; font-size: 10px; color: var(--gold); letter-spacing: 5px;">[ COMM_ESTABLISHED ]</div>
-        <h1>The April Odyssey</h1>
-        <p class="poetic">"To the pilot who belongs to the sky. I've mapped out this journey specifically for you. Are you ready for takeoff?"</p>
-        <button class="task-btn" style="margin-top: 30px;" onclick="nextStep('moment1')">INITIATE FLIGHT</button>
+    <section id="s0" class="active">
+        <h1 style="color:var(--gold);">MISSION: 0425</h1>
+        <p class="terminal-txt" id="t0">PILOT AUTHORIZATION REQUIRED. Access your mission logs to proceed to the Hangar.</p>
+        <button class="btn-v8" onclick="initFlight()">START TAKEOFF</button>
     </section>
 
-    <section id="moment1">
-        <div class="monitor-v5"><img src="photo1.jpg"></div>
-        <div style="font-family:'JetBrains Mono'; font-size: 10px; color: var(--neon);">LOG 01 // 35,000 FT</div>
-        <p class="poetic">"Watching your eyes ignite when you talk about aviation is my favorite view. You carry the horizon in your soul, and I'm lucky to be your co-pilot."</p>
-        <button class="task-btn" style="margin-top: 30px; padding: 10px 20px; font-size: 0.8rem;" onclick="nextStep('moment2')">NEXT LOG</button>
+    <section id="s1">
+        <div class="monitor-v8">
+            <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/320x200/000/00f3ff?text=PILOT+PHOTO+01'">
+            <div class="scanner-line"></div>
+        </div>
+        <span style="color:var(--neon); font-size:10px;">[ LOG 01: 35,000 FT ]</span>
+        <p class="terminal-txt" id="t1"></p>
+        <button class="btn-v8" onclick="go(2, 32000, 680, 'Never lose your Hot Wheels spark. In a world of serious faces, your playful heart is my favorite masterpiece.')">NEXT SECTOR</button>
     </section>
 
-    <section id="moment2">
-        <div class="monitor-v5" style="transform: perspective(1000px) rotateY(15deg);"><img src="photo2.jpg"></div>
-        <div style="font-family:'JetBrains Mono'; font-size: 10px; color: var(--neon);">LOG 02 // CARGO: TOY GARAGE</div>
-        <p class="poetic">"Never lose that Hot Wheels spark. In a world of serious faces, your playful heart is what makes you rare. Every tiny wheel has a story, just like us."</p>
-        <button class="task-btn" style="margin-top: 30px; padding: 10px 20px; font-size: 0.8rem;" onclick="nextStep('hangar')">OPEN HANGAR</button>
+    <section id="s2">
+        <div class="monitor-v8">
+            <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/320x200/000/00f3ff?text=GARAGE+PHOTO+02'">
+            <div class="scanner-line"></div>
+        </div>
+        <span style="color:var(--neon); font-size:10px;">[ LOG 02: TOY GARAGE ]</span>
+        <p class="terminal-txt" id="t2"></p>
+        <button class="btn-v8" onclick="go(3, 35000, 850, 'Frequency Secured. Your voice is the only signal I want to tune into. The Hangar is now in range. Choose your fuel.')">APPROACH HANGAR</button>
     </section>
 
-    <section id="hangar">
-        <h1 style="color: var(--gold); letter-spacing: 12px; margin-bottom: 20px;">THE HANGAR</h1>
-        <div class="hangar-grid">
-            <div class="sealed-box" id="box1" onclick="triggerTask('The RC Car')"><span>🎁</span><label>Box 01</label></div>
-            <div class="sealed-box" id="box2" onclick="triggerTask('Teddy & Rose')"><span>🎁</span><label>Box 02</label></div>
-            <div class="sealed-box" id="box3" onclick="triggerTask('The Dress')"><span>🎁</span><label>Box 03</label></div>
-            <div class="sealed-box" id="box4" onclick="triggerTask('New Slippers')"><span>🎁</span><label>Box 04</label></div>
+    <section id="s3">
+        <h1 style="color:var(--gold); letter-spacing: 10px;">THE HANGAR</h1>
+        <div class="gift-grid">
+            <div class="box-unit" onclick="openTask('The RC Car')"><span>🏎️</span><label>Unit 01</label></div>
+            <div class="box-unit" onclick="openTask('Teddy & Rose')"><span>🧸</span><label>Unit 02</label></div>
+            <div class="box-unit" onclick="openTask('The Dress')"><span>👗</span><label>Unit 03</label></div>
+            <div class="box-unit" onclick="openTask('New Slippers')"><span>👡</span><label>Unit 04</label></div>
         </div>
 
-        <div id="final-reveal">
-            <h2 style="color:var(--neon); font-family:'Orbitron';">MISSION SUCCESSFUL ✅</h2>
-            <p id="choice-display" style="font-family:'JetBrains Mono'; font-size:1.6rem; color:var(--gold); margin: 20px 0; font-weight:bold;"></p>
-            <p class="poetic" style="font-size:1.1rem;">"This is my secret promise. I'll bring this to your world very soon. Ready for the next chapter? ✈️"</p>
+        <div id="final-msg">
+            <h2 style="color:var(--neon); font-family: 'Orbitron';">MISSION SUCCESSFUL ✅</h2>
+            <p id="c-text" style="color: var(--gold); margin: 15px 0; font-size: 1.5rem; font-weight: bold;"></p>
+            <p style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.1rem;">"This is my secret promise. Landmark reached. ✈️"</p>
         </div>
     </section>
 
     <div id="task-overlay">
         <div class="task-card">
             <h2 style="font-family:'Orbitron'; color:var(--gold); font-size: 1.1rem;">ENCRYPTION DETECTED</h2>
-            <p style="font-size:0.9rem; color:#ccc; margin-top:20px; line-height:1.6;">"He has the key but never unlocks his potential. She has the story but never tells it. Together, they form a perfect engine. Who is 'He'?"</p>
-            <input type="text" id="task-input" class="task-input" placeholder="DECODE ANSWER...">
-            <button class="task-btn" onclick="verifyTask()">AUTHORIZE CLEARANCE</button>
+            <p style="font-size: 0.9rem; color: #ccc; line-height: 1.6; margin-top: 15px;">"He has the key but never unlocks his potential. She has the story but never tells it. Together, they form a perfect engine. Who is 'He'?"</p>
+            <input type="text" id="task-input" class="task-input" placeholder="DECODE...">
+            <button class="btn-v8" onclick="verify()">AUTHORIZE</button>
         </div>
     </div>
 
     <script>
-        // Cloud Generation
+        // Synthesized Audio (No files needed!)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function beep(freq = 800, duration = 100) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value = freq; osc.type = 'square';
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration/1000);
+            osc.start(); osc.stop(audioCtx.currentTime + duration/1000);
+        }
+
+        // Cloud Generator
         for(let i=0; i<12; i++) {
             let cloud = document.createElement('div');
-            cloud.className = 'cloud';
+            cloud.className = 'cloud-v8';
             cloud.innerText = '☁️';
-            cloud.style.setProperty('--top', Math.random() * 90 + 'vh');
-            cloud.style.animationDelay = (Math.random() * 20) + 's';
-            document.body.appendChild(cloud);
+            cloud.style.top = Math.random() * 90 + 'vh';
+            cloud.style.animationDelay = (Math.random() * 15) + 's';
+            document.getElementById('sky-v8').appendChild(cloud);
         }
 
-        // Sequential Navigation (Instead of just scrolling)
-        document.getElementById('intro').classList.add('visible');
-
-        function nextStep(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-            setTimeout(() => {
-                document.getElementById(id).classList.add('visible');
-            }, 500);
+        function initFlight() {
+            audioCtx.resume();
+            beep(600, 200);
+            go(1, 15000, 420, 'Watching you talk about aviation is where I find my horizon. You carry the sky in your soul, Pilot.');
         }
 
-        let currentChoice = "";
-        function triggerTask(choice) {
-            currentChoice = choice;
+        function go(num, alt, spd, txt) {
+            beep(800, 100);
+            document.querySelector('section.active').classList.remove('active');
+            document.getElementById(`s${num}`).classList.add('active');
+            
+            document.getElementById('alt-val').innerText = alt;
+            document.getElementById('spd-val').innerText = spd;
+            document.getElementById('p-line').style.width = (num * 33.3) + "%";
+
+            const el = document.getElementById(`t${num}`);
+            if(el) {
+                el.innerHTML = "";
+                let i = 0;
+                function type() {
+                    if (i < txt.length) {
+                        el.innerHTML += txt.charAt(i);
+                        i++;
+                        setTimeout(type, 35);
+                    }
+                }
+                type();
+            }
+        }
+
+        let choice = "";
+        function openTask(g) {
+            beep(1000, 50);
+            choice = g;
             document.getElementById('task-overlay').style.display = 'flex';
         }
 
-        function verifyTask() {
-            const ans = document.getElementById('task-input').value.toLowerCase().trim();
-            if(ans === "hot wheels") {
+        function verify() {
+            const val = document.getElementById('task-input').value.toLowerCase().trim();
+            if(val === "hot wheels") {
+                beep(1200, 500);
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
                 document.getElementById('task-overlay').style.display = 'none';
-                document.querySelector('.hangar-grid').style.display = 'none';
-                document.getElementById('choice-display').innerText = "UNLOCKED: " + currentChoice;
-                document.getElementById('final-reveal').style.display = 'block';
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            } else {
-                alert("ACCESS DENIED! The Pilot knows the answer...");
+                document.querySelector('.gift-grid').style.display = 'none';
+                document.getElementById('c-text').innerText = "LOCK: " + choice;
+                document.getElementById('final-msg').style.display = 'block';
+            } else { 
+                beep(200, 500);
+                alert("ACCESS DENIED!"); 
             }
         }
+
+        // Tilt Interaction
+        window.addEventListener('deviceorientation', (e) => {
+            const x = e.gamma / 5;
+            const y = e.beta / 5;
+            document.getElementById('sky-v8').style.transform = `translate(${x}px, ${y}px)`;
+        });
     </script>
 </body>
 </html>
