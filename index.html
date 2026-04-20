@@ -3,177 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | The Final Approach</title>
+    <title>Flight 0425 | The Odyssey</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-        body, html { margin: 0; padding: 0; background: #050508; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        
-        /* Realistic Sky Background */
-        .sky {
+        :root { --gold: #c5a059; --dark: #050608; --neon: #00f2ff; }
+        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        /* Cinematic Background */
+        #sky-bg {
             position: fixed; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #0a192f 0%, #020205 100%);
+            background: radial-gradient(circle at 50% 50%, #0d1a26 0%, #050608 100%);
             z-index: -1;
         }
 
-        .cloud {
-            position: absolute; background: white; border-radius: 50%;
-            filter: blur(60px); opacity: 0.1; pointer-events: none;
+        /* Radar Grid Lines */
+        .radar-grid {
+            position: fixed; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: 0; pointer-events: none;
         }
 
-        /* Flight Path Line */
-        .flight-line {
-            position: fixed; left: 50px; top: 0; width: 2px; height: 100%;
-            background: rgba(255, 255, 255, 0.15); z-index: 1;
+        section { min-height: 100vh; display: flex; align-items: center; justify-content: space-around; padding: 60px 10%; position: relative; }
+
+        /* Cinematic Photo Frames */
+        .photo-monitor {
+            background: #000; border: 5px solid #1a1a1a; padding: 12px;
+            border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.9), 0 0 20px rgba(184, 134, 11, 0.1);
+            max-width: 380px; transform: perspective(1200px) rotateY(-12deg);
+            z-index: 2;
         }
-        .plane-icon {
-            position: fixed; left: 38px; top: 20%; font-size: 24px; z-index: 2;
-            transition: top 0.1s linear;
+        .photo-monitor img { width: 100%; border-radius: 6px; display: block; filter: contrast(1.05); }
+
+        .content-card { max-width: 550px; z-index: 3; opacity: 0; transform: translateY(40px); }
+        h1 { font-family: 'Playfair Display'; font-size: clamp(2.8rem, 6vw, 4.5rem); margin: 10px 0; color: var(--gold); line-height: 1.1; }
+        .alt-label { font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--neon); letter-spacing: 6px; text-transform: uppercase; }
+
+        /* Final Landing Task */
+        .lever-track {
+            width: 75px; height: 220px; background: #111;
+            margin: 40px auto; border-radius: 40px; position: relative;
+            border: 3px solid #222; box-shadow: inset 0 0 15px #000; cursor: pointer;
         }
-
-        section { min-height: 100vh; padding-left: 120px; display: flex; align-items: center; position: relative; }
-
-        .card {
-            background: rgba(20, 20, 25, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 50px;
-            max-width: 650px;
-            border-left: 4px solid #b8860b;
-            opacity: 0; transform: translateX(50px);
-        }
-
-        .altitude-label { font-family: 'JetBrains Mono'; color: #b8860b; font-size: 0.9rem; margin-bottom: 10px; }
-        h1 { font-family: 'Playfair Display'; font-size: 3.5rem; margin: 10px 0; }
-
-        /* The Gift Box Section */
-        .lock-container { text-align: center; width: 100%; }
-        .box-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 30px; }
-        
-        .gift-box {
-            background: #111; border: 2px dashed #444;
-            padding: 40px; border-radius: 15px; position: relative;
-            cursor: not-allowed; transition: 0.3s;
-        }
-        
-        .gift-box.unlocked { border: 2px solid #b8860b; cursor: pointer; background: rgba(184, 134, 11, 0.1); }
-
-        /* The Hidden Key */
-        #secret-key {
-            position: absolute; bottom: 100px; right: 50px;
-            font-size: 40px; cursor: grab; z-index: 100;
-            filter: drop-shadow(0 0 10px gold);
-            display: none;
+        .lever-head {
+            width: 65px; height: 65px; background: var(--gold);
+            border-radius: 50%; position: absolute; top: 8px; left: 2px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6); font-size: 1.8rem;
+            display: flex; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .instruction { font-style: italic; color: #888; margin-top: 15px; }
+        #reveal-msg { display: none; text-align: center; margin-top: 30px; animation: glowFade 1.2s ease forwards; }
+        @keyframes glowFade { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
     </style>
 </head>
 <body>
 
-    <div class="sky" id="sky"></div>
-    <div class="flight-line"></div>
-    <div class="plane-icon" id="plane">✈️</div>
+    <div id="sky-bg"></div>
+    <div class="radar-grid"></div>
 
     <section>
-        <div class="card">
-            <div class="altitude-label">ALTITUDE: 10,000 FT // TAKEOFF</div>
+        <div class="content-card">
+            <span class="alt-label">ALTITUDE: 10,000 FT</span>
             <h1>The April Odyssey</h1>
-            <p>Welcome to Flight 0425. This isn't just a birthday; it's a journey through the moments that made me look up. Strap in.</p>
+            <p>A cinematic celebration of a soul that loves the sky and chases the fast lanes. This flight is dedicated to you.</p>
+        </div>
+        <div class="photo-monitor">
+            <img src="image1.jpg" alt="Moment 1">
+        </div>
+    </section>
+
+    <section style="flex-direction: row-reverse;">
+        <div class="content-card">
+            <span class="alt-label">ALTITUDE: 35,000 FT</span>
+            <h1>The Symphony</h1>
+            <p>"She worries she talks too much... but her voice is the only frequency I want to tune into. Every story is a melody."</p>
+        </div>
+        <div class="photo-monitor" style="transform: perspective(1200px) rotateY(12deg);">
+            <img src="image2.jpg" alt="Moment 2">
         </div>
     </section>
 
     <section>
-        <div class="card">
-            <div class="altitude-label">ALTITUDE: 25,000 FT // CRUISE</div>
-            <h1>A Head in the Clouds</h1>
-            <p>Watching you talk about aviation is like watching a pilot find their way home. You weren't meant for the ground—you carry the sky in your spirit.</p>
-        </div>
-    </section>
-
-    <section>
-        <div class="card">
-            <div class="altitude-label">ALTITUDE: 38,000 FT // DEEP SKY</div>
-            <h1>Hidden Depths</h1>
-            <p>Beneath the 'mass' attitude and the non-stop stories, I see the strength you carry. You've weathered storms I can't imagine, yet you still shine brighter than any star at this altitude.</p>
-        </div>
-    </section>
-
-    <section id="final-approach">
-        <div class="card lock-container">
-            <div class="altitude-label">FINAL APPROACH // LANDING</div>
-            <h1>The Secret Hangar</h1>
-            <p>The gifts are locked. To open them, you must find the **Golden Key** hidden somewhere in the cockpit (this page) and drag it to a box.</p>
+        <div class="content-card" style="text-align: center; max-width: 800px;">
+            <span class="alt-label">FINAL APPROACH // HANGAR</span>
+            <h1>The Landing Task</h1>
+            <p>The gifts are locked in the hangar. To clear for landing, pull the <b>Landing Gear Lever</b> down.</p>
             
-            <div class="box-grid" id="box-grid">
-                <div class="gift-box" id="box1" ondrop="drop(event)" ondragover="allowDrop(event)">🔒 Box 1</div>
-                <div class="gift-box" id="box2" ondrop="drop(event)" ondragover="allowDrop(event)">🔒 Box 2</div>
-                <div class="gift-box" id="box3" ondrop="drop(event)" ondragover="allowDrop(event)">🔒 Box 3</div>
-                <div class="gift-box" id="box4" ondrop="drop(event)" ondragover="allowDrop(event)">🔒 Box 4</div>
+            <div class="lever-track" id="task-track">
+                <div class="lever-head" id="task-lever">⬇️</div>
             </div>
-            <p class="instruction">Hint: Search the "Hidden Depths" section carefully...</p>
+
+            <div id="reveal-msg">
+                <h2 style="color:var(--gold); letter-spacing: 5px;">HANGAR OPEN</h2>
+                <p style="font-size: 1.2rem;"><b>RC Car | Teddy & Rose | The Dress | New Slippers</b></p>
+                <p style="opacity: 0.6; font-style: italic;">System secured. Destination: Her Smile.</p>
+            </div>
         </div>
     </section>
-
-    <div id="secret-key" draggable="true" ondragstart="drag(event)">🔑</div>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Plane follows scroll
-        window.addEventListener('scroll', () => {
-            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 80 + 10;
-            document.getElementById('plane').style.top = scrollPercent + '%';
-        });
-
-        // Reveal cards
-        gsap.utils.toArray(".card").forEach(card => {
+        // Card reveal logic
+        gsap.utils.toArray(".content-card").forEach(card => {
             gsap.to(card, {
-                scrollTrigger: { trigger: card, start: "top 75%" },
-                opacity: 1, x: 0, duration: 1.5, ease: "power4.out"
+                scrollTrigger: { trigger: card, start: "top 80%" },
+                opacity: 1, y: 0, duration: 1.5, ease: "power4.out"
             });
         });
 
-        // Show key only when she reaches the end
-        ScrollTrigger.create({
-            trigger: "#final-approach",
-            onEnter: () => document.getElementById('secret-key').style.display = 'block'
-        });
+        // Lever Logic
+        const lever = document.getElementById('task-lever');
+        const track = document.getElementById('task-track');
+        let locked = false;
 
-        // Drag and Drop Logic
-        function allowDrop(ev) { ev.preventDefault(); }
-        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-        function drop(ev) {
-            ev.preventDefault();
-            const box = ev.target;
-            if (box.classList.contains('gift-box')) {
-                box.innerHTML = "🔓 UNLOCKED!";
-                box.classList.add('unlocked');
-                box.style.borderColor = "gold";
-                
-                // Final Reveal - Neenga keta 4 gifts
-                const gifts = ["RC Car", "Teddy & Rose", "The Dress", "Slippers"];
-                const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
-                
+        track.addEventListener('click', () => {
+            if(!locked) {
+                lever.style.top = "140px";
+                lever.style.background = "#fff";
+                lever.innerHTML = "✅";
+                locked = true;
                 setTimeout(() => {
-                    alert("System Cleared! You've unlocked: " + randomGift + "\nDecision recorded for April 25.");
-                }, 500);
+                    document.getElementById('reveal-msg').style.display = 'block';
+                }, 400);
+            } else {
+                lever.style.top = "8px";
+                lever.style.background = "#c5a059";
+                lever.innerHTML = "⬇️";
+                locked = false;
+                document.getElementById('reveal-msg').style.display = 'none';
             }
-        }
-
-        // Add some random clouds
-        const sky = document.getElementById('sky');
-        for(let i=0; i<15; i++) {
-            let c = document.createElement('div');
-            c.className = 'cloud';
-            c.style.width = Math.random()*400 + 100 + 'px';
-            c.style.height = c.style.width;
-            c.style.top = Math.random()*2000 + 'px';
-            c.style.left = Math.random()*100 + '%';
-            sky.appendChild(c);
-        }
+        });
     </script>
 </body>
 </html>
