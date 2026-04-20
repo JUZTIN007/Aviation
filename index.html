@@ -3,42 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | The Mission</title>
+    <title>Flight 0425 | The Final Odyssey</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gold: #c5a059; --dark: #050608; --neon: #00f2ff; }
+        :root { --gold: #c5a059; --dark: #050508; --neon: #00f2ff; }
         body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-
         #sky-bg { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #0d1a26 0%, #020205 100%); z-index: -1; }
         .radar-grid { position: fixed; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px; z-index: 0; pointer-events: none; }
-
+        
         section { min-height: 100vh; display: flex; align-items: center; justify-content: space-around; padding: 0 10%; position: relative; }
-
-        .monitor { background: #000; border: 3px solid #222; padding: 10px; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.8); max-width: 350px; transform: perspective(1000px) rotateY(-10deg); position: relative; }
-        .monitor img { width: 100%; border-radius: 6px; display: block; }
-
-        /* Radar Scanner Effect */
-        .radar-scanner { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: rgba(0, 242, 255, 0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; }
-        .radar-circle { width: 100px; height: 100px; border: 2px solid var(--neon); border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+        
+        .monitor { background: #000; border: 3px solid #222; padding: 10px; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.8); max-width: 320px; transform: perspective(1000px) rotateY(-10deg); transition: 0.5s; }
+        .monitor img { width: 100%; border-radius: 6px; display: block; filter: contrast(1.1); }
 
         .content-card { max-width: 550px; z-index: 3; opacity: 0; transform: translateY(40px); transition: 1s; }
-        h1 { font-family: 'Playfair Display'; font-size: 3rem; margin: 10px 0; color: var(--gold); }
+        h1 { font-family: 'Playfair Display'; font-size: clamp(2.5rem, 5vw, 4rem); margin: 10px 0; color: var(--gold); }
         .alt-label { font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--neon); letter-spacing: 5px; }
 
-        /* Locked Gift Box */
-        .gift-box-container { text-align: center; }
-        .box-visual { font-size: 80px; cursor: pointer; transition: 0.3s; filter: grayscale(1); }
-        .box-unlocked { filter: grayscale(0) drop-shadow(0 0 20px var(--gold)); }
+        .big-box { font-size: 100px; cursor: pointer; transition: 0.5s; filter: grayscale(1); text-align: center; margin: 20px 0; }
+        .big-box:hover { transform: scale(1.1); }
+        .unlocked-box { filter: grayscale(0) drop-shadow(0 0 25px var(--gold)); }
 
-        .gift-options { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .option-btn { background: #111; border: 1px solid var(--gold); color: white; padding: 15px; border-radius: 5px; cursor: pointer; }
-        .option-btn:hover { background: var(--gold); color: black; }
+        .gift-grid { display: none; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .gift-card { background: #111; border: 1px solid var(--gold); padding: 25px; border-radius: 12px; cursor: pointer; text-align: center; transition: 0.3s; font-weight: bold; }
+        .gift-card:hover { background: var(--gold); color: black; transform: translateY(-5px); }
 
-        #final-promise { display: none; margin-top: 30px; padding: 20px; border: 1px dashed var(--gold); background: rgba(197, 160, 89, 0.1); }
+        #confirmation { display: none; margin-top: 30px; border: 2px solid #28a745; padding: 30px; background: rgba(40, 167, 169, 0.1); border-radius: 15px; text-align: center; }
+        .success-text { color: #28a745; font-weight: bold; font-size: 1.5rem; }
     </style>
 </head>
 <body>
@@ -48,104 +42,113 @@
 
     <section>
         <div class="content-card" style="opacity:1; transform:none;">
-            <span class="alt-label">ALTITUDE: 10,000 FT</span>
+            <span class="alt-label">FLIGHT 0425 // MISSION START</span>
             <h1>The April Odyssey</h1>
-            <p>Welcome, Pilot. To proceed to the hangar, you must complete the mission. <br><br><b>Step 1:</b> Scan the radar to find the hidden clearance.</p>
-        </div>
-        <div class="monitor">
-            <img src="photo1.jpg">
+            <p>A cinematic record of the girl who belongs to the sky. Every altitude below holds a piece of the story we've built together.</p>
         </div>
     </section>
 
     <section>
-        <div class="content-card" id="radar-text">
-            <span class="alt-label">ALTITUDE: 30,000 FT</span>
-            <h1>Targeting...</h1>
-            <p>This altitude carries the most precious signal. Click the radar on the right to scan for the final moment and the **Hangar Key**.</p>
+        <div class="content-card">
+            <span class="alt-label">LOG 01 // THE SKY</span>
+            <h1>Headed for the Clouds</h1>
+            <p>To the girl who finds her peace at 30,000 feet: Watching you chase your aviation dreams is my favorite view. You were never meant for the ground.</p>
         </div>
-        <div class="monitor" id="radar-monitor">
-            <div class="radar-scanner" id="scanner" onclick="startScan()">
-                <div class="radar-circle"></div>
-                <span style="color:var(--neon); font-size: 0.7rem; font-family: 'JetBrains Mono';">TAP TO SCAN</span>
-            </div>
-            <img src="photo2.jpg" id="photo2" style="display:none;">
+        <div class="monitor"><img src="photo1.jpg" alt="Moment 1"></div>
+    </section>
+
+    <section style="flex-direction: row-reverse;">
+        <div class="content-card">
+            <span class="alt-label">LOG 02 // TOY GARAGE</span>
+            <h1>Small Scales, Big Heart</h1>
+            <p>Your love for Hot Wheels and that cute childish spark makes you rare. In a world rushing to grow up, thank you for staying playful.</p>
         </div>
+        <div class="monitor" style="transform: perspective(1000px) rotateY(10deg);"><img src="photo2.jpg" alt="Moment 2"></div>
     </section>
 
     <section>
-        <div class="content-card gift-box-container">
+        <div class="content-card">
+            <span class="alt-label">LOG 03 // HIDDEN DEPTHS</span>
+            <h1>The Quiet Strength</h1>
+            <p>You worry you talk too much, but I find my peace in your voice. Behind that 'mass' smile, you're stronger than anyone knows.</p>
+        </div>
+        <div class="monitor"><img src="photo3.jpg" alt="Moment 3"></div>
+    </section>
+
+    <section>
+        <div class="content-card" style="text-align: center; max-width: 800px;">
             <span class="alt-label">FINAL DESTINATION</span>
             <h1>The Secret Hangar</h1>
-            <p id="hangar-desc">Hangar is **LOCKED**. You need the clearance from the radar scan above.</p>
+            <p id="task-text">Enter Clearance Code (Your Birthday Date: <b>25</b>) to unlock the gifts.</p>
             
-            <div class="box-visual" id="main-box">🎁</div>
-            
-            <div class="gift-options" id="options">
-                <button class="option-btn" onclick="revealPromise('RC Car')">🏎️ RC Car</button>
-                <button class="option-btn" onclick="revealPromise('Teddy & Rose')">🧸 Teddy & Rose</button>
-                <button class="option-btn" onclick="revealPromise('The Dress')">👗 The Dress</button>
-                <button class="option-btn" onclick="revealPromise('New Slippers')">👡 New Slippers</button>
+            <div class="big-box" id="main-box" onclick="tryUnlock()">🎁</div>
+
+            <div class="gift-grid" id="gift-selection">
+                <div class="gift-card" onclick="sendChoice('RC Car')">🏎️ <br>RC Car</div>
+                <div class="gift-card" onclick="sendChoice('Teddy & Rose')">🧸 <br>Teddy & Rose</div>
+                <div class="gift-card" onclick="sendChoice('The Dress')">👗 <br>The Dress</div>
+                <div class="gift-card" onclick="sendChoice('New Slippers')">👡 <br>New Slippers</div>
             </div>
 
-            <div id="final-promise">
-                <h2 id="chosen-gift" style="color:var(--gold); margin:0;"></h2>
-                <p><b>Decision Logged.</b> I see you. I'll get this for you soon as a promise for our next chapter. ✈️</p>
+            <div id="confirmation">
+                <p class="success-text">TARGET ACQUIRED! ✅</p>
+                <p id="final-choice-text" style="font-size: 1.2rem; margin: 15px 0;"></p>
+                <p><b>Your choice has been transmitted to A's Juztin.</b> <br>Your surprise is cleared for arrival on April 25. ✈️</p>
             </div>
         </div>
     </section>
+
+    <form id="email-form" action="https://formspree.io/f/titleillaksvs@gmail.com" method="POST" style="display:none;">
+        <input type="text" name="Chosen Gift" id="form-input">
+        <input type="text" name="Message" value="A's Juztin, she has locked her birthday choice!">
+    </form>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
-
-        // 1. Radar Scan Logic
-        let hasKey = false;
-        function startScan() {
-            const scanner = document.getElementById('scanner');
-            const photo2 = document.getElementById('photo2');
-            const hangarDesc = document.getElementById('hangar-desc');
-            const box = document.getElementById('main-box');
-
-            scanner.innerHTML = "<span style='color:gold'>SCANNING...</span>";
-            
-            setTimeout(() => {
-                scanner.style.display = 'none';
-                photo2.style.display = 'block';
-                hasKey = true;
-                
-                // Unlock the box UI
-                hangarDesc.innerHTML = "<span style='color:gold'>CLEARANCE RECEIVED. Click the box to open!</span>";
-                box.classList.add('box-unlocked');
-                alert("Clearance Received! The Hangar Key is now active.");
-            }, 2000);
-        }
-
-        // 2. Open Gift Box
-        document.getElementById('main-box').addEventListener('click', () => {
-            if(hasKey) {
-                document.getElementById('main-box').innerHTML = "📦✨";
-                document.getElementById('options').style.display = 'grid';
-                document.getElementById('hangar-desc').innerText = "Choose your destination. I'm listening.";
-                gsap.from("#options", {opacity: 0, y: 20, duration: 1});
-            } else {
-                alert("Access Denied. Complete the Radar Scan first!");
-            }
-        });
-
-        // 3. Final Promise
-        function revealPromise(gift) {
-            document.getElementById('chosen-gift').innerText = gift + " Locked In";
-            document.getElementById('final-promise').style.display = 'block';
-            document.getElementById('options').style.display = 'none';
-            gsap.from("#final-promise", {scale: 0.8, opacity: 0, duration: 1});
-        }
-
-        // 4. Scroll Reveal
+        
+        // Scroll Reveal Animations
         gsap.utils.toArray(".content-card").forEach(card => {
             gsap.to(card, {
-                scrollTrigger: { trigger: card, start: "top 80%" },
-                opacity: 1, y: 0, duration: 1.5
+                scrollTrigger: { trigger: card, start: "top 85%" },
+                opacity: 1, y: 0, duration: 1.5, ease: "power4.out"
             });
         });
+
+        // Unlock Hangar
+        function tryUnlock() {
+            const code = prompt("Pilot, enter Clearance Code:");
+            if(code === "25") {
+                const box = document.getElementById('main-box');
+                box.classList.add('unlocked-box');
+                box.innerHTML = "📦✨";
+                document.getElementById('task-text').innerHTML = "<span style='color:var(--neon)'>CLEARANCE GRANTED.</span> Choose one destination.";
+                document.getElementById('gift-selection').style.display = 'grid';
+                gsap.from("#gift-selection", { scale: 0.8, opacity: 0, duration: 0.5 });
+            } else {
+                alert("Incorrect Code. Review your flight logs!");
+            }
+        }
+
+        // Send Notification & Finalize
+        function sendChoice(gift) {
+            const form = document.getElementById('email-form');
+            document.getElementById('form-input').value = gift;
+            
+            // Send the choice to your email
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            });
+
+            // UI Update
+            document.getElementById('gift-selection').style.display = 'none';
+            document.getElementById('main-box').style.display = 'none';
+            document.getElementById('task-text').style.display = 'none';
+            document.getElementById('final-choice-text').innerText = `You have locked in the ${gift}.`;
+            document.getElementById('confirmation').style.display = 'block';
+            gsap.from("#confirmation", { y: 30, opacity: 0, duration: 1 });
+        }
     </script>
 </body>
 </html>
