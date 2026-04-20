@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | The Radar Mission</title>
+    <title>Flight 0425 | The Final Approach</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
@@ -12,26 +12,27 @@
         :root { --gold: #c5a059; --dark: #050508; --neon: #00f2ff; }
         body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: crosshair; }
 
-        /* Cinematic Sky */
+        /* Cinematic Background */
         #sky-bg {
             position: fixed; width: 100%; height: 100%;
             background: radial-gradient(circle at 50% 50%, #0d1a26 0%, #020205 100%);
             z-index: -1;
         }
 
-        /* Moving Clouds */
-        .cloud {
-            position: absolute; background: white; border-radius: 50%;
-            filter: blur(80px); opacity: 0.05; pointer-events: none;
+        /* Radar Grid */
+        .radar-grid {
+            position: fixed; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: 0; pointer-events: none;
         }
 
-        /* THE PLANE (Interactive Task) */
-        #interactive-plane {
-            position: fixed; font-size: 30px; z-index: 100;
-            cursor: pointer; filter: drop-shadow(0 0 10px var(--neon));
-            user-select: none; transition: transform 0.2s;
+        /* Animated Target Plane */
+        #target-plane {
+            position: fixed; font-size: 24px; z-index: 100; cursor: pointer;
+            filter: drop-shadow(0 0 8px var(--neon)); user-select: none;
         }
-        #interactive-plane:hover { transform: scale(1.5); }
 
         section { min-height: 100vh; display: flex; align-items: center; justify-content: space-around; padding: 0 10%; position: relative; }
 
@@ -46,65 +47,68 @@
         h1 { font-family: 'Playfair Display'; font-size: clamp(2.5rem, 5vw, 4rem); margin: 10px 0; color: var(--gold); }
         .alt-label { font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--neon); letter-spacing: 5px; }
 
-        /* Hangar Section */
-        .hangar-locked { filter: grayscale(1) blur(2px); pointer-events: none; opacity: 0.5; transition: 0.5s; }
-        .hangar-unlocked { filter: grayscale(0) blur(0); pointer-events: auto; opacity: 1; }
+        /* Hangar Section Styles */
+        .hangar-card { text-align: center; max-width: 800px; transition: 0.5s; }
+        .locked-state { opacity: 0.4; filter: blur(2px); pointer-events: none; }
 
         .lever-track {
             width: 70px; height: 180px; background: #111;
             margin: 30px auto; border-radius: 35px; position: relative;
-            border: 2px solid #333;
+            border: 2px solid #333; cursor: pointer;
         }
         .lever-head {
             width: 60px; height: 60px; background: var(--gold);
             border-radius: 50%; position: absolute; top: 5px; left: 3px;
             display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #final-reveal { display: none; margin-top: 20px; color: var(--gold); font-weight: bold; }
+        #final-msg { display: none; margin-top: 20px; animation: fadeIn 1s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="sky-bg"></div>
-    <div id="interactive-plane">✈️</div>
+    <div class="radar-grid"></div>
+    <div id="target-plane">✈️</div>
 
     <section>
         <div class="content-card">
-            <span class="alt-label">ALTITUDE: 10,000 FT // LOG 01</span>
+            <span class="alt-label">ENTRY 01 // TAKEOFF</span>
             <h1>The April Odyssey</h1>
-            <p>Welcome, Pilot. Your journey begins here. Somewhere in this sky, your clearance key is flying. Can you spot it?</p>
+            <p>Welcome to your personal airspace. Somewhere in this sky, a target is flying. Find it to unlock your clearance.</p>
         </div>
         <div class="monitor">
-            <img src="photo1.jpg" alt="Photo 1">
+            <img src="photo1.jpg" alt="Moment 1">
         </div>
     </section>
 
     <section style="flex-direction: row-reverse;">
         <div class="content-card">
-            <span class="alt-label">ALTITUDE: 35,000 FT // LOG 02</span>
+            <span class="alt-label">ENTRY 02 // CRUISE</span>
             <h1>The Symphony</h1>
-            <p>"She worries she talks too much... but I find my peace in her noise." Keep an eye on the radar, the target is moving.</p>
+            <p>"Every story she tells is a melody that keeps me flying." Keep searching the radar for the Golden Flight.</p>
         </div>
         <div class="monitor" style="transform: perspective(1000px) rotateY(10deg);">
-            <img src="photo2.jpg" alt="Photo 2">
+            <img src="photo2.jpg" alt="Moment 2">
         </div>
     </section>
 
     <section id="hangar-section">
-        <div class="content-card hangar-locked" id="hangar-card" style="text-align: center; max-width: 800px;">
-            <span class="alt-label">FINAL APPROACH // HANGAR</span>
-            <h1 id="task-title">Hangar Locked</h1>
-            <p id="task-desc">System offline. You must **click the flying plane** in the sky to get landing clearance.</p>
+        <div class="content-card hangar-card locked-state" id="hangar-ui">
+            <span class="alt-label" id="status-tag">SYSTEM: LOCKED</span>
+            <h1 id="main-title">Hangar Offline</h1>
+            <p id="instruction">You must **find and click the flying plane** in the sky to get Landing Clearance.</p>
             
-            <div class="lever-track" id="track">
-                <div class="lever-head" id="lever">🔒</div>
+            <div class="lever-track" id="lever-track">
+                <div class="lever-head" id="lever-knob">🔒</div>
             </div>
 
-            <div id="final-reveal">
-                <h2>ACCESS GRANTED</h2>
-                <p>RC Car | Teddy & Rose | The Dress | New Slippers</p>
-                <p>Logged for April 25.</p>
+            <div id="final-msg">
+                <h2 style="color:var(--gold)">CLEARANCE GRANTED</h2>
+                <p>One of these will be yours: <br> <b>RC Car | Teddy & Rose | The Dress | New Slippers</b></p>
+                <p style="opacity: 0.6; font-style: italic;">Logged for April 25.</p>
             </div>
         </div>
     </section>
@@ -113,33 +117,38 @@
         gsap.registerPlugin(ScrollTrigger);
 
         // 1. Plane Movement (The Task)
-        const plane = document.getElementById('interactive-plane');
-        function movePlane() {
-            const x = Math.random() * (window.innerWidth - 50);
-            const y = Math.random() * (window.innerHeight - 50);
-            gsap.to(plane, { x: x, y: y, duration: 3, ease: "sine.inOut", onComplete: movePlane });
+        const plane = document.getElementById('target-plane');
+        function flyPlane() {
+            const x = Math.random() * (window.innerWidth - 60);
+            const y = Math.random() * (window.innerHeight - 60);
+            gsap.to(plane, { x: x, y: y, duration: 4, ease: "sine.inOut", onComplete: flyPlane });
         }
-        movePlane();
+        flyPlane();
 
-        // 2. Unlocking the Hangar
+        // 2. Unlocking Logic
+        let clearanceReceived = false;
         plane.addEventListener('click', () => {
+            clearanceReceived = true;
             plane.innerHTML = "✨";
             plane.style.color = "gold";
-            document.getElementById('hangar-card').classList.remove('hangar-locked');
-            document.getElementById('hangar-card').classList.add('hangar-unlocked');
-            document.getElementById('task-title').innerText = "Clearance Received";
-            document.getElementById('task-desc').innerText = "Now, pull the lever to open the Hangar.";
-            document.getElementById('lever').innerHTML = "⬇️";
-            alert("Landing clearance received! Proceed to the Hangar.");
+            
+            const ui = document.getElementById('hangar-ui');
+            ui.classList.remove('locked-state');
+            document.getElementById('status-tag').innerText = "SYSTEM: READY";
+            document.getElementById('main-title').innerText = "Landing Clearance";
+            document.getElementById('instruction').innerText = "Clearance received. Pull the lever to finish the mission.";
+            document.getElementById('lever-knob').innerHTML = "⬇️";
+            
+            alert("Landing clearance received! Target secured.");
         });
 
-        // 3. Lever Logic
+        // 3. Lever Functionality
         let unlocked = false;
-        document.getElementById('track').addEventListener('click', () => {
-            if(!unlocked && document.getElementById('hangar-card').classList.contains('hangar-unlocked')) {
-                document.getElementById('lever').style.top = "110px";
-                document.getElementById('lever').innerHTML = "✅";
-                document.getElementById('final-reveal').style.display = 'block';
+        document.getElementById('lever-track').addEventListener('click', () => {
+            if(clearanceReceived && !unlocked) {
+                document.getElementById('lever-knob').style.top = "115px";
+                document.getElementById('lever-knob').innerHTML = "✅";
+                document.getElementById('final-msg').style.display = 'block';
                 unlocked = true;
             }
         });
@@ -151,17 +160,6 @@
                 opacity: 1, y: 0, duration: 1.5
             });
         });
-
-        // 5. Background Clouds
-        for(let i=0; i<10; i++) {
-            let c = document.createElement('div');
-            c.className = 'cloud';
-            c.style.width = Math.random()*300+100+'px';
-            c.style.height = c.style.width;
-            c.style.top = Math.random()*100+'%';
-            c.style.left = Math.random()*100+'%';
-            document.body.appendChild(c);
-        }
     </script>
 </body>
 </html>
