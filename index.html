@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | The Private Odyssey</title>
+    <title>Flight 0425 | Our Odyssey</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
@@ -12,35 +12,55 @@
         :root { --gold: #c5a059; --dark: #010203; --neon: #00ff00; }
         body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* Mobile Progress & Radar Vibe */
+        /* Interactive Cockpit Vibe */
         #sky-bg { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #0a150a 0%, #020205 100%); z-index: -1; }
-        .grid-overlay { position: fixed; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px); background-size: 30px 30px; opacity: 0.3; z-index: 0; }
+        .grid-overlay { position: fixed; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px); background-size: 30px 30px; opacity: 0.3; z-index: 0; pointer-events: none; }
 
-        /* The Scroll-Based Plane */
-        #side-plane { position: fixed; right: 10px; bottom: 10%; font-size: 25px; z-index: 100; transition: 0.1s; filter: drop-shadow(0 0 10px var(--neon)); pointer-events: none; }
+        /* Scroll Progress */
         .flight-path { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--neon); z-index: 1000; box-shadow: 0 0 10px var(--neon); }
+
+        /* The Switches Panel (Interactivity) */
+        .switch-panel { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 500; text-align: right; }
+        .switch-item { display: flex; align-items: center; margin-bottom: 25px; opacity: 0.6; transition: 0.3s; cursor: pointer; }
+        .switch-item:hover { opacity: 1; }
+        .switch-item.active { opacity: 1; pointer-events: none; color: var(--neon); }
+        .switch-label { font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #aaa; margin-right: 15px; }
+        .switch-item.active .switch-label { color: var(--neon); }
+        .switch-btn { width: 15px; height: 15px; border: 2px solid #555; background: rgba(0,0,0,0.4); border-radius: 50%; display: inline-block; position: relative; }
+        .switch-item.active .switch-btn { border-color: var(--neon); background: var(--neon); box-shadow: 0 0 10px var(--neon); }
 
         section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 8%; text-align: center; position: relative; }
         
         .monitor { background: #000; border: 2px solid #1a1a1a; padding: 10px; border-radius: 8px; box-shadow: 0 0 30px rgba(0, 255, 0, 0.1); width: 100%; max-width: 300px; margin-top: 20px; }
         .monitor img { width: 100%; border-radius: 4px; display: block; filter: contrast(1.1); }
+        .poetic-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; line-height: 1.6; color: #e0e0e0; margin-top: 15px; }
 
         .content-card { z-index: 3; opacity: 0; transform: translateY(30px); margin-bottom: 20px; }
+        /* Blurry content for locked moments */
+        .content-locked p { filter: blur(5px); opacity: 0.5; pointer-events: none; transition: 1s; }
+        .moment-active p { filter: blur(0) !important; opacity: 1 !important; pointer-events: all; }
+
         h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 0; color: var(--gold); line-height: 1.2; }
-        p.poetic-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; line-height: 1.6; color: #e0e0e0; margin-top: 15px; }
         .alt-label { font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--neon); letter-spacing: 3px; margin-bottom: 5px; display: block; }
 
-        /* Box Task UI */
-        .box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; width: 100%; }
-        .box-card { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 30px 0; border-radius: 12px; font-size: 40px; }
-        
-        #quiz-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1001; align-items: center; justify-content: center; }
-        .quiz-card { padding: 30px; border: 1px solid var(--gold); border-radius: 15px; background: #050508; width: 85%; max-width: 350px; }
-        .quiz-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: white; font-size: 1.2rem; text-align: center; width: 100%; margin: 20px 0; outline: none; }
-        .quiz-btn { background: var(--gold); color: #000; border: none; padding: 10px 25px; font-weight: bold; border-radius: 5px; width: 100%; }
+        /* The Secret Hangar Task */
+        .gift-hangar { text-align: center; max-width: 800px; opacity: 0.3; }
+        .hangar-active { opacity: 1 !important; }
+        .box-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 50px; }
+        .box-card { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 35px; border-radius: 12px; font-size: 45px; cursor: pointer; transition: 0.3s; filter: grayscale(1); position: relative; }
+        .box-card:hover { border-color: var(--gold); }
+        .hangar-unlocked .box-card { filter: grayscale(0) drop-shadow(0 0 10px var(--gold)); border-color: var(--gold); }
+        .box-card::after { content: "🔒 LOCKED"; position: absolute; bottom: 8px; left: 0; width: 100%; font-family: 'JetBrains Mono'; font-size: 9px; color: #ff3b3b; text-align: center; }
+        .hangar-unlocked .box-card::after { content: "🔓 UNLOCKED"; color: var(--gold); }
 
-        #final-reveal { display: none; margin-top: 30px; border: 1px dashed var(--neon); padding: 20px; background: rgba(0, 255, 0, 0.05); border-radius: 10px; }
-        .flight-id { font-family: 'JetBrains Mono'; font-size: 1.5rem; color: var(--neon); letter-spacing: 3px; display: block; margin: 10px 0; }
+        /* Quiz Overlay */
+        #quiz-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1001; align-items: center; justify-content: center; }
+        .quiz-card { padding: 30px; border: 1px solid var(--gold); border-radius: 15px; background: #050508; width: 85%; max-width: 350px; text-align: center; }
+        .quiz-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: white; font-size: 1.2rem; text-align: center; width: 100%; margin: 20px 0; outline: none; font-family: 'JetBrains Mono'; }
+        .quiz-btn { background: var(--gold); color: #000; border: none; padding: 10px 25px; font-weight: bold; border-radius: 5px; width: 100%; cursor: pointer; }
+        
+        #final-reveal { display: none; margin-top: 30px; border: 1px dashed var(--neon); padding: 25px; background: rgba(0, 255, 0, 0.05); border-radius: 10px; }
+        .flight-id { font-family: 'JetBrains Mono'; font-size: 1.4rem; color: var(--neon); letter-spacing: 3px; display: block; margin: 10px 0; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -48,96 +68,136 @@
     <div id="sky-bg"></div>
     <div class="grid-overlay"></div>
     <div class="flight-path" id="progress"></div>
-    <div id="side-plane">✈️</div>
+
+    <div class="switch-panel">
+        <div class="switch-item" id="s1" onclick="activateSection(1, 's1', 'Photo Scan', 'b1')">
+            <span class="switch-label">Aviation Scan</span>
+            <div class="switch-btn"></div>
+        </div>
+        <div class="switch-item" id="s2" onclick="activateSection(2, 's2', 'Fuel Gage', 'b2')">
+            <span class="switch-label">Hot Wheels Gage</span>
+            <div class="switch-btn"></div>
+        </div>
+        <div class="switch-item" id="s3" onclick="activateSection(3, 's3', 'Radar Fix', 'b3')">
+            <span class="switch-label">Hidden Depths Radar</span>
+            <div class="switch-btn"></div>
+        </div>
+    </div>
 
     <section>
         <div class="content-card" style="opacity: 1; transform: none;">
-            <span class="alt-label">[ LOGBOOK_OPEN ]</span>
+            <span class="alt-label">[ Mission Initialization ]</span>
             <h1>The April Odyssey.</h1>
-            <p class="poetic-text">"Scroll down to begin our flight. The sky is waiting for you."</p>
+            <p class="poetic-text">"The hangar is in lockdown. Activate the 3 cockpit scanners on the right to reveal our odyssey logs."</p>
         </div>
     </section>
 
-    <section>
+    <section id="b1" class="moment-active content-locked">
         <div class="content-card">
             <span class="alt-label">LOG 01 // 35,000 FT</span>
-            <h1>Pilot's Eyes.</h1>
-            <p class="poetic-text">"Whenever you talk about aviation, you don't just talk. You fly. Watching your passion ignite is my favorite view."</p>
+            <h1>Sky-Bound Soul.</h1>
+            <p class="poetic-text">Watching you talk about aviation is like seeing a engine roar to life. You weren't built for the ground. Watches closely, Pilot.</p>
         </div>
         <div class="monitor"><img src="photo1.jpg"></div>
     </section>
 
-    <section>
+    <section id="b2" class="moment-active content-locked">
         <div class="content-card">
-            <span class="alt-label">LOG 02 // TOY GARAGE</span>
+            <span class="alt-label">LOG 02 // Toy Garage</span>
             <h1>Pure & Authentic.</h1>
-            <p class="poetic-text">"Never lose that Hot Wheels spark. In a world full of serious faces, your childish heart is what makes you a masterpiece."</p>
+            <p class="poetic-text">In a world full of serious faces, your childish heart and Hot Wheels passion is what makes you rare. Watches closely, Pilot.</p>
         </div>
-        <div class="monitor"><img src="photo2.jpg"></div>
+        <div class="monitor" style="transform: perspective(1000px) rotateY(10deg);"><img src="photo2.jpg"></div>
     </section>
 
-    <section>
+    <section id="b3" class="moment-active content-locked">
         <div class="content-card">
-            <span class="alt-label">LOG 03 // FREQUENCY</span>
-            <h1>The Silent Strength.</h1>
-            <p class="poetic-text">"Behind your 'mass' smile, I see a girl who has won wars alone. You're stronger than any jet engine."</p>
+            <span class="alt-label">LOG 03 // RADAR DEPTHS</span>
+            <h1>Hidden Strength.</h1>
+            <p class="poetic-text">Behind thatcheerful 'mass' smile, you're stronger than you know. Your voice is my peace frequency. Watches closely, Pilot.</p>
         </div>
         <div class="monitor"><img src="photo3.jpg"></div>
     </section>
 
-    <section>
+    <section id="hangar" class="gift-hangar">
         <div class="content-card">
-            <span class="alt-label">DESTINATION_LOCK</span>
-            <h1>Secret Hangar.</h1>
-            <p class="poetic-text">Pick your gift to claim your clearance code.</p>
-            <div class="box-grid">
-                <div class="box-card" onclick="triggerQuiz('RC Car', 'SKY-RC-007')">🎁</div>
-                <div class="box-card" onclick="triggerQuiz('Teddy & Rose', 'AERO-HUG-025')">🎁</div>
-                <div class="box-card" onclick="triggerQuiz('The Dress', 'STYLE-FLY-04')">🎁</div>
-                <div class="box-card" onclick="triggerQuiz('New Slippers', 'CLOUD-WALK-01')">🎁</div>
+            <span class="alt-label">DESTINATION_LOCK // PROTOCOL SECURED</span>
+            <h1>Secret Hangar Access.</h1>
+            <p id="hangar-msg" class="poetic-text">The hangar is still in lockdown. You need all three scanner authorizations.</p>
+            
+            <div class="box-grid" id="boxes">
+                <div class="box-card" onclick="startQuiz('RC Car', 'SKY-RC-007')">🎁</div>
+                <div class="box-card" onclick="startQuiz('Teddy & Rose', 'AERO-HUG-025')">🎁</div>
+                <div class="box-card" onclick="startQuiz('The Dress', 'STYLE-FLY-04')">🎁</div>
+                <div class="box-card" onclick="startQuiz('New Slippers', 'CLOUD-WALK-01')">🎁</div>
             </div>
 
             <div id="final-reveal">
-                <p class="poetic-text" style="font-size:0.9rem;">Clearance Granted. Report this ID to Juztin:</p>
+                <h2 style="color:#28a745; font-family: 'Playfair Display'; margin: 0;">CLEARANCE ACCEPTED ✅</h2>
+                <p class="poetic-text" style="font-size:0.9rem; margin:10px 0;">Destination Locked. Report this code to Juztin:</p>
                 <span id="secret-id" class="flight-id"></span>
-                <p style="opacity:0.6; font-size:0.8rem;">I'll bring this to your future soon. ✈️</p>
+                <p style="opacity:0.6; font-size:0.8rem;">I'll bring this to your future very soon. ✈️</p>
             </div>
         </div>
     </section>
 
     <div id="quiz-overlay">
         <div class="quiz-card">
-            <h2 style="color:var(--gold); font-family: 'Playfair Display';">Task: Authorized Only</h2>
-            <p style="font-size:0.9rem; color:#ccc;">He has the key but never unlocks. She has the story but never tells. Together, they form an engine. Who is 'He'?</p>
-            <input type="text" id="quiz-input" class="quiz-input" placeholder="Type here...">
-            <button class="quiz-btn" onclick="checkQuiz()">AUTHORIZE</button>
+            <h2 style="color:var(--gold); font-family: 'Playfair Display';">Final Clearance Quiz</h2>
+            <p style="font-size:0.9rem; color:#ccc;">"He has the key but never unlocks his potential. She has the story but never tells it. Together, they form a perfect engine. Who is 'He'?"</p>
+            <input type="text" id="quiz-input" class="quiz-input" placeholder="Type answer...">
+            <button class="quiz-btn" onclick="checkQuiz()">SUBMIT CLEARANCE</button>
         </div>
     </div>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Mobile Scroll Plane & Progress
+        // Mobile Scroll Progress Header
         window.addEventListener('scroll', () => {
             const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
             document.getElementById('progress').style.width = scrollPercent + "%";
-            
-            // Plane moves up as she scrolls down
-            const planePos = 10 + (scrollPercent * 0.8);
-            document.getElementById('side-plane').style.bottom = planePos + "%";
-            // Tilt plane up/down based on scroll
-            document.getElementById('side-plane').style.transform = `rotate(-${scrollPercent / 2}deg)`;
         });
 
-        // Scroll reveals
+        // Scroll Reveal Animations
         gsap.utils.toArray(".content-card").forEach(card => {
             gsap.to(card, { scrollTrigger: { trigger: card, start: "top 85%" }, opacity: 1, y: 0, duration: 1.2 });
         });
 
+        // The Switch Interactivity Logic
+        let activeSections = 0;
+        function activateSection(index, switchId, hudLog, sectionId) {
+            const currentSection = document.getElementById(sectionId);
+            const currentSwitch = document.getElementById(switchId);
+            
+            if(!currentSwitch.classList.contains('active')) {
+                // UI feedback
+                currentSwitch.classList.add('active');
+                currentSection.classList.remove('content-locked');
+                gsap.from(`#${sectionId}`, {scale:0.95, duration: 1, ease: "power2.out"});
+                
+                // Track progress
+                activeSections++;
+                
+                // Final reveal logic
+                if(activeSections === 3) {
+                    const hangar = document.getElementById('hangar');
+                    hangar.classList.add('hangar-active');
+                    hangar.classList.add('hangar-unlocked');
+                    document.getElementById('hangar-msg').innerHTML = "<span style='color:var(--neon)'>ALL SCANNERS ACTIVE. Boxes are UNLOCKED.</span> Choose your gift and solve the final tricky question.";
+                    gsap.from("#hangar", {scale:0.95, duration:1});
+                }
+            }
+        }
+
         let selectedID = "";
-        function triggerQuiz(gift, id) {
-            selectedID = id;
-            document.getElementById('quiz-overlay').style.display = 'flex';
+        function startQuiz(gift, id) {
+            if(activeSections === 3) {
+                selectedID = id;
+                document.getElementById('quiz-overlay').style.display = 'flex';
+            } else {
+                alert("Unlock all Scanners on the right panel first!");
+            }
         }
 
         function checkQuiz() {
@@ -147,8 +207,10 @@
                 document.querySelector('.box-grid').style.display = 'none';
                 document.getElementById('secret-id').innerText = selectedID;
                 document.getElementById('final-reveal').style.display = 'block';
-                gsap.from("#final-reveal", {opacity:0, scale:0.9, duration:0.8});
-            } else { alert("Clearance Denied!"); }
+                gsap.from("#final-reveal", {opacity:0, scale:0.9, duration:1, ease: "back.out(1.7)"});
+            } else {
+                alert("Clearance Denied! Review your Hot Wheels log.");
+            }
         }
     </script>
 </body>
