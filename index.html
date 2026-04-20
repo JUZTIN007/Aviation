@@ -3,102 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | The Final Odyssey</title>
+    <title>Flight 0425 | Final Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    
     <style>
-        :root { --neon: #00f3ff; --gold: #c5a059; --dark: #010208; --red: #ff3b3b; --green: #00ff88; }
+        :root { --neon: #00f3ff; --gold: #c5a059; --dark: #010208; }
         body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh; }
-
-        /* 3D Background Fix */
-        #sky-fixed { position: fixed; width: 140%; height: 140%; top: -20%; left: -20%; background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%); z-index: -2; transition: 0.1s ease-out; }
-        .cloud-particle { position: absolute; font-size: 100px; opacity: 0.15; animation: drift 20s linear infinite; pointer-events: none; }
-        @keyframes drift { from { left: 110%; } to { left: -30%; } }
+        
+        /* Fixed Background */
+        #sky { position: fixed; width: 100%; height: 100%; background: linear-gradient(to bottom, #0a1a2f, #010208); z-index: -2; }
+        .cloud { position: absolute; font-size: 80px; opacity: 0.1; animation: move 20s linear infinite; top: var(--t); }
+        @keyframes move { from { left: 110%; } to { left: -20%; } }
 
         /* HUD Status */
-        .hud-ui { position: fixed; top: 15px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; color: var(--neon); font-size: 11px; font-weight: bold; letter-spacing: 2px; }
-        .p-bar { position: fixed; top: 0; left: 0; width: 0%; height: 5px; background: var(--neon); box-shadow: 0 0 15px var(--neon); z-index: 101; transition: 1s; }
+        .hud { position: fixed; top: 10px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; color: var(--neon); font-size: 10px; font-weight: bold; }
+        .bar { position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: var(--neon); box-shadow: 0 0 10px var(--neon); z-index: 101; transition: 1s; }
 
-        .plane-v-final { position: fixed; top: 35%; left: -150px; font-size: 60px; z-index: 50; filter: drop-shadow(0 0 25px var(--neon)); animation: fly 15s linear infinite; }
-        @keyframes fly { 0% { left: -150px; transform: rotate(10deg); } 100% { left: 110%; transform: rotate(-10deg); } }
+        section { height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px; text-align: center; }
+        section.active { display: flex; }
 
-        section { height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 0 25px; text-align: center; }
-        section.active { display: flex; animation: fadeIn 0.8s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Story Frames */
+        .frame { border: 2px solid var(--neon); padding: 5px; border-radius: 10px; background: #000; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); max-width: 280px; margin-bottom: 20px; position: relative; }
+        .frame img { width: 100%; border-radius: 5px; display: block; }
 
-        /* Story Displays */
-        .frame-v8 { border: 3px solid var(--neon); padding: 10px; border-radius: 15px; background: #000; box-shadow: 0 0 40px rgba(0, 243, 255, 0.2); max-width: 310px; margin-bottom: 25px; position: relative; overflow: hidden; }
-        .frame-v8 img { width: 100%; border-radius: 8px; display: block; filter: contrast(1.1); }
-        .scan { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--neon); opacity: 0.5; animation: s 3s linear infinite; }
-        @keyframes s { 0% { top:0; } 100% { top:100%; } }
+        /* Gift Grid */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; margin-top: 20px; }
+        .box { background: rgba(255,255,255,0.05); border: 2px solid #333; border-radius: 15px; padding: 25px 0; cursor: pointer; transition: 0.3s; }
+        .box:hover { border-color: var(--neon); background: rgba(0,243,255,0.1); }
+        .unit-label { font-family: 'Orbitron'; font-size: 9px; color: var(--gold); margin-top: 10px; display: block; }
 
-        /* HANGAR GRID */
-        .hangar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 450px; margin-top: 30px; }
-        .unit-box { background: rgba(255,255,255,0.05); border: 2.5px solid #444; border-radius: 20px; padding: 35px 0; cursor: pointer; transition: 0.3s; }
-        .unit-box:hover { border-color: var(--neon); transform: translateY(-5px); }
-        .u1 { border-color: var(--red); } .u2 { border-color: var(--green); }
-        .u3 { border-color: #ff00ff; } .u4 { border-color: var(--gold); }
-        .unit-box span { font-size: 55px; display: block; margin-bottom: 10px; }
-        .unit-box label { font-family: 'Orbitron'; font-size: 10px; color: var(--gold); letter-spacing: 2px; }
+        /* Reveal Zone */
+        #reveal { display: none; margin-top: 20px; text-align: center; }
+        .glow-frame { border: 4px solid var(--neon); border-radius: 15px; padding: 10px; background: #000; box-shadow: 0 0 50px var(--neon); }
+        .glow-frame img { width: 280px; height: 320px; object-fit: cover; border-radius: 10px; }
 
-        /* THE MASS REVEAL (RE-FIXED LINKS) */
-        #reveal-zone { display: none; margin-top: 20px; animation: pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .neon-glow-frame { border: 5px solid var(--neon); border-radius: 20px; padding: 15px; background: #000; box-shadow: 0 0 60px var(--neon); }
-        .neon-glow-frame img { width: 300px; height: 350px; object-fit: cover; max-width: 85vw; border-radius: 12px; display: block; }
-
-        .btn { background: none; border: 2px solid var(--neon); color: var(--neon); padding: 12px 30px; font-family: 'Orbitron'; cursor: pointer; border-radius: 8px; margin-top: 20px; text-transform: uppercase; }
+        .btn { background: none; border: 1px solid var(--neon); color: var(--neon); padding: 10px 25px; font-family: 'Orbitron'; cursor: pointer; margin-top: 15px; border-radius: 4px; }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .card { background: #05080a; border: 2px solid var(--neon); padding: 30px; border-radius: 20px; text-align: center; width: 100%; max-width: 320px; }
     </style>
 </head>
 <body>
+    <div id="sky"></div>
+    <div class="hud"><span>ALT: <span id="a">0</span> FT</span><span>SPD: <span id="s">0</span> KTS</span></div>
+    <div class="bar" id="pb"></div>
 
-    <div id="sky-fixed"></div>
-    <div class="hud-ui">
-        <span>ALT: <span id="alt">0</span> FT</span>
-        <span>SPD: <span id="spd">0</span> KTS</span>
-    </div>
-    <div class="p-bar" id="pb"></div>
-    <div class="plane-v-final">✈️</div>
-
-    <section id="step0" class="active">
-        <h1 style="color:var(--gold); font-family:'Orbitron'; letter-spacing:6px;">MISSION: 0425</h1>
-        <p>Sensors Ready. Authentication Required.</p>
-        <button class="btn" onclick="start()">START ODYSSEY</button>
+    <section id="s0" class="active">
+        <h1 style="color:var(--gold); font-family:'Orbitron';">MISSION: 0425</h1>
+        <p>Aviation Systems Online. Ready for Takeoff?</p>
+        <button class="btn" onclick="start()">START FLIGHT</button>
     </section>
 
-    <section id="step1">
-        <div class="frame-v8"><img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x200/010208/00f3ff?text=LOG_01'"><div class="scan"></div></div>
-        <p id="t1" style="min-height:90px;"></p>
-        <button class="btn" onclick="go(2, 25000, 520, 'In a world of serious faces, your Hot Wheels passion is a masterpiece. Never lose that childish spark.')">NEXT LOG</button>
+    <section id="s1">
+        <div class="frame"><img src="photo1.jpg" onerror="this.src='https://images.unsplash.com/photo-1436491865332-7a61a109c0f2?w=400'"><div style="position:absolute; top:0; width:100%; height:2px; background:var(--neon); animation:scan 3s linear infinite;"></div></div>
+        <p id="t1" style="min-height:80px; font-size: 0.9rem;"></p>
+        <button class="btn" onclick="go(2, 25000, 600, 'Never lose that childish spark. Your Hot Wheels garage is a masterpiece.')">NEXT LOG</button>
     </section>
 
-    <section id="step2">
-        <div class="frame-v8"><img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x200/010208/00f3ff?text=LOG_02'"><div class="scan"></div></div>
-        <p id="t2" style="min-height:90px;"></p>
-        <button class="btn" onclick="go(3, 35000, 850, 'Frequency Secured. Approach Hangar 0425 confirmed. Choose your fuel.')">APPROACH HANGAR</button>
+    <section id="s2">
+        <div class="frame"><img src="photo2.jpg" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'"></div>
+        <p id="t2" style="min-height:80px; font-size: 0.9rem;"></p>
+        <button class="btn" onclick="go(3, 35000, 850, 'Frequency Secured. Approach Hangar 0425. Select your birthday fuel.')">APPROACH HANGAR</button>
     </section>
 
-    <section id="step3">
-        <h1 style="color:var(--gold); font-family:'Orbitron';">THE HANGAR</h1>
-        <div class="hangar-grid" id="grid">
-            <div class="unit-box u1" onclick="task('The RC Car', 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?q=80&w=800')"><span>🏎️</span><label>UNIT 01</label></div>
-            <div class="unit-box u2" onclick="task('Teddy & Rose', 'https://images.unsplash.com/photo-1559447232-6fbe7a21c394?q=80&w=800')"><span>🧸</span><label>UNIT 02</label></div>
-            <div class="unit-box u3" onclick="task('The Dress', 'https://images.unsplash.com/photo-1518917232260-0e613b775522?q=80&w=800')"><span>👗</span><label>UNIT 03</label></div>
-            <div class="unit-box u4" onclick="task('New Slippers', 'https://images.unsplash.com/photo-1603487759133-bc5a3a203e07?q=80&w=800')"><span>👡</span><label>UNIT 04</label></div>
+    <section id="s3">
+        <h1 style="color:var(--gold); font-family:'Orbitron'; font-size: 1.2rem;">THE HANGAR</h1>
+        <div class="grid" id="grid">
+            <div class="box" onclick="ask('The RC Car', 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600')"><span>🏎️</span><label class="unit-label">UNIT 01</label></div>
+            <div class="box" onclick="ask('Teddy & Rose', 'https://images.unsplash.com/photo-1559447232-6fbe7a21c394?w=600')"><span>🧸</span><label class="unit-label">UNIT 02</label></div>
+            <div class="box" onclick="ask('The Dress', 'https://images.unsplash.com/photo-1518917232260-0e613b775522?w=600')"><span>👗</span><label class="unit-label">UNIT 03</label></div>
+            <div class="box" onclick="ask('New Slippers', 'https://images.unsplash.com/photo-1603487759133-bc5a3a203e07?w=600')"><span>👡</span><label class="unit-label">UNIT 04</label></div>
         </div>
-        <div id="reveal-zone">
-            <div class="neon-glow-frame">
-                <img id="f-img" src="" alt="Gift Reveal">
-                <h2 id="f-name" style="color:var(--gold); font-family:'Orbitron'; margin-top:20px;"></h2>
+        <div id="reveal">
+            <div class="glow-frame">
+                <img id="fimg" src="">
+                <h2 id="fname" style="color:var(--gold); font-family:'Orbitron'; font-size: 1rem; margin-top: 15px;"></h2>
             </div>
-            <p style="margin-top:20px; font-style:italic;">"Mission Successful. Happy Birthday Pilot! ✈️"</p>
+            <p style="margin-top: 15px; font-style: italic; font-size: 0.8rem;">"Happy Birthday Pilot! ✈️"</p>
         </div>
     </section>
 
-    <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:2000; align-items:center; justify-content:center;">
-        <div style="background:#05080a; border:2px solid var(--neon); padding:40px 25px; border-radius:30px; text-align:center; max-width:350px;">
+    <div id="overlay">
+        <div class="card">
             <h3 style="color:var(--gold); font-family:'Orbitron';">AUTHENTICATE</h3>
-            <p style="font-size:0.8rem;">"He has the key but never unlocks his potential. Who is 'He'?"</p>
+            <p style="font-size: 0.8rem;">"He has the key but never unlocks his potential. Who is 'He'?"</p>
             <input type="text" id="ans" style="background:none; border:none; border-bottom:2px solid var(--gold); color:#fff; font-size:1.5rem; text-align:center; width:100%; margin:20px 0; outline:none;" placeholder="...">
             <button class="btn" onclick="verify()">AUTHORIZE</button>
         </div>
@@ -106,25 +92,19 @@
 
     <script>
         function start() {
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => {
-                    if (res == 'granted') window.addEventListener('deviceorientation', hTilt);
-                });
-            } else { window.addEventListener('deviceorientation', hTilt); }
-            go(1, 15000, 420, 'Watching you talk about aviation is where I find my horizon. You carry the sky in your soul, Pilot.');
+            if (window.DeviceOrientationEvent) window.addEventListener('deviceorientation', (e) => {
+                document.getElementById('sky').style.transform = `translate(${e.gamma/5}px, ${e.beta/5}px)`;
+            });
+            go(1, 15000, 420, 'Watching you talk about aviation is where my horizon begins.');
         }
 
-        function hTilt(e) {
-            document.getElementById('sky-fixed').style.transform = `translate(${e.gamma/5}px, ${e.beta/5}px)`;
-        }
-
-        function go(num, alt, spd, txt) {
+        function go(n, alt, spd, txt) {
             document.querySelector('section.active').classList.remove('active');
-            document.getElementById(`step${num}`).classList.add('active');
-            document.getElementById('alt').innerText = alt;
-            document.getElementById('spd').innerText = spd;
-            document.getElementById('pb').style.width = (num * 33) + "%";
-            const el = document.getElementById(`t${num}`);
+            document.getElementById(`s${n}`).classList.add('active');
+            document.getElementById('a').innerText = alt;
+            document.getElementById('s').innerText = spd;
+            document.getElementById('pb').style.width = (n * 33.3) + "%";
+            let el = document.getElementById(`t${n}`);
             if(el) {
                 el.innerText = ""; let i = 0;
                 function type() { if(i < txt.length) { el.innerText += txt.charAt(i); i++; setTimeout(type, 40); } }
@@ -132,25 +112,25 @@
             }
         }
 
-        let sN = "", sI = "";
-        function task(n, i) { sN = n; sI = i; document.getElementById('overlay').style.display = 'flex'; }
+        let gn = "", gi = "";
+        function ask(n, i) { gn = n; gi = i; document.getElementById('overlay').style.display = 'flex'; }
 
         function verify() {
             if(document.getElementById('ans').value.toLowerCase().trim() === "hot wheels") {
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('grid').style.display = 'none';
-                document.getElementById('f-img').src = sI;
-                document.getElementById('f-name').innerText = sN;
-                document.getElementById('reveal-zone').style.display = 'block';
-            } else { alert("ACCESS DENIED!"); }
+                document.getElementById('fimg').src = gi;
+                document.getElementById('fname').innerText = gn;
+                document.getElementById('reveal').style.display = 'block';
+            } else { alert("WRONG KEY!"); }
         }
 
-        const sky = document.getElementById('sky-fixed');
-        for(let i=0; i<15; i++) {
+        const sky = document.getElementById('sky');
+        for(let i=0; i<10; i++) {
             let c = document.createElement('div');
-            c.className = 'cloud-particle'; c.innerText = '☁️';
-            c.style.top = Math.random() * 80 + 'vh';
-            c.style.animationDelay = (Math.random() * 15) + 's';
+            c.className = 'cloud'; c.innerText = '☁️';
+            c.style.setProperty('--t', Math.random() * 80 + 'vh');
+            c.style.animationDelay = Math.random() * 15 + 's';
             sky.appendChild(c);
         }
     </script>
