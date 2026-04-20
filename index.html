@@ -3,200 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | The Final Odyssey</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <title>Flight 0425 | Turbo Fix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-        :root { --neon: #00f3ff; --gold: #c5a059; --dark: #010208; --red: #ff3b3b; }
-        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh; -webkit-tap-highlight-color: transparent; }
+        :root { --neon: #00f3ff; --gold: #c5a059; --dark: #010208; --box-bg: rgba(0, 243, 255, 0.05); }
+        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh; }
 
-        /* 3D Moving Atmosphere */
-        #sky-v8 { position: fixed; width: 110%; height: 110%; top: -5%; left: -5%; background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%); z-index: -2; transition: transform 0.2s ease-out; }
-        .cloud-v8 { position: absolute; font-size: 100px; opacity: 0.1; z-index: -1; animation: drift 25s linear infinite; }
+        /* Background & Tilt Area */
+        #sky-v9 { position: fixed; width: 120%; height: 120%; top: -10%; left: -10%; background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%); z-index: -2; transition: 0.1s ease-out; }
+        .cloud { position: absolute; font-size: 80px; opacity: 0.1; animation: drift 20s linear infinite; }
         @keyframes drift { from { left: 110%; } to { left: -20%; } }
 
-        /* CONSTANT FLYING PLANE ICON */
-        .plane-v8 { position: fixed; top: 40%; left: -100px; font-size: 45px; z-index: 50; filter: drop-shadow(0 0 15px var(--neon)); animation: fly 12s linear infinite; }
-        @keyframes fly { 0% { left: -100px; transform: rotate(10deg); } 100% { left: 110%; transform: rotate(-10deg); } }
-
-        /* HUD Cockpit UI */
-        .hud-top { position: fixed; top: 15px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; font-size: 11px; color: var(--neon); letter-spacing: 2px; font-weight: bold; }
-        .hud-line { position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); z-index: 101; transition: 0.8s; }
+        /* HUD */
+        .hud { position: fixed; top: 15px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; color: var(--neon); font-size: 10px; font-weight: bold; }
+        .progress-bar { position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); z-index: 101; transition: 0.8s; }
 
         section { height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 0 25px; text-align: center; }
-        section.active { display: flex; animation: slideIn 0.8s forwards; }
-        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        section.active { display: flex; }
 
-        /* Image Display with Scanner Effect */
-        .monitor-v8 { width: 100%; max-width: 320px; border: 3px solid var(--neon); border-radius: 12px; position: relative; margin-bottom: 20px; background: #000; box-shadow: 0 0 40px rgba(0, 243, 255, 0.3); overflow: hidden; }
-        .monitor-v8 img { width: 100%; display: block; filter: contrast(1.1); }
-        .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); animation: scan 3s linear infinite; opacity: 0.6; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        /* THE GIFT BOXES (COLORFUL & VISIBLE) */
+        .gift-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 400px; margin-top: 30px; }
+        .gift-box { 
+            background: var(--box-bg); 
+            border: 2px solid #333; 
+            border-radius: 20px; 
+            padding: 30px 0; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .gift-box:hover { border-color: var(--neon); transform: scale(1.05); background: rgba(0, 243, 255, 0.15); }
+        .gift-box.c1 { border-color: #ff3b3b; } /* Red */
+        .gift-box.c2 { border-color: #00ff88; } /* Green */
+        .gift-box.c3 { border-color: #ff00ff; } /* Pink */
+        .gift-box.c4 { border-color: #ffcc00; } /* Yellow */
+        
+        .gift-box span { font-size: 45px; display: block; margin-bottom: 10px; }
+        .gift-box label { font-family: 'Orbitron'; font-size: 10px; color: var(--gold); letter-spacing: 1px; }
 
-        h1 { font-family: 'Orbitron'; font-size: 1.6rem; color: var(--neon); letter-spacing: 4px; margin: 10px 0; text-shadow: 0 0 10px var(--neon); }
-        .terminal-txt { font-family: 'JetBrains Mono'; font-size: 0.95rem; color: #ccc; min-height: 80px; margin: 15px 0; line-height: 1.6; max-width: 500px; }
-
-        /* BUTTONS */
-        .btn-v8 { background: none; border: 1px solid var(--neon); color: var(--neon); padding: 12px 30px; font-family: 'Orbitron'; font-size: 0.8rem; cursor: pointer; border-radius: 5px; box-shadow: 0 0 10px rgba(0,243,255,0.2); transition: 0.3s; }
-        .btn-v8:active { background: var(--neon); color: #000; }
-
-        /* THE HANGAR - 4 BOXES */
-        .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; margin-top: 30px; }
-        .box-unit { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; border-radius: 20px; padding: 35px 0; cursor: pointer; transition: 0.4s; position: relative; }
-        .box-unit:hover { border-color: var(--neon); background: rgba(0, 243, 255, 0.1); transform: translateY(-5px); }
-        .box-unit span { font-size: 50px; display: block; margin-bottom: 10px; }
-        .box-unit label { font-family: 'Orbitron'; font-size: 9px; color: var(--gold); }
-
-        /* TASK POPUP */
-        #task-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 2000; align-items: center; justify-content: center; padding: 25px; }
-        .task-card { background: #05080a; border: 3px solid var(--neon); padding: 50px 30px; border-radius: 30px; text-align: center; max-width: 400px; box-shadow: 0 0 60px var(--neon); }
-        .task-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: #fff; font-size: 1.6rem; text-align: center; width: 100%; outline: none; margin: 25px 0; }
-
-        #final-msg { display: none; margin-top: 40px; border: 3px dashed var(--gold); padding: 30px; background: rgba(197, 160, 89, 0.15); border-radius: 25px; backdrop-filter: blur(10px); }
+        /* Task & Popup */
+        #popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; }
+        .card { background: #05080a; border: 2px solid var(--neon); padding: 40px; border-radius: 25px; text-align: center; width: 80%; max-width: 350px; }
+        .input-field { background: none; border: none; border-bottom: 2px solid var(--gold); color: #fff; font-size: 1.5rem; text-align: center; width: 100%; margin: 20px 0; outline: none; }
+        
+        .btn { background: none; border: 1px solid var(--neon); color: var(--neon); padding: 12px 25px; font-family: 'Orbitron'; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="sky-v8"></div>
-    <div class="hud-top">
-        <span>ALT: <span id="alt-val">0</span> FT</span>
-        <span>SPD: <span id="spd-val">0</span> KTS</span>
+    <div id="sky-v9"></div>
+    <div class="hud">
+        <span>ALT: <span id="alt">0</span> FT</span>
+        <span>SPD: <span id="spd">0</span> KTS</span>
     </div>
-    <div class="hud-line" id="p-line"></div>
-    <div class="plane-v8">✈️</div>
+    <div class="progress-bar" id="pb"></div>
 
     <section id="s0" class="active">
         <h1 style="color:var(--gold);">MISSION: 0425</h1>
-        <p class="terminal-txt" id="t0">PILOT AUTHORIZATION REQUIRED. Access your mission logs to proceed to the Hangar.</p>
-        <button class="btn-v8" onclick="initFlight()">START TAKEOFF</button>
+        <p>Flight systems ready. Sensors require activation for Tilt-Control.</p>
+        <button class="btn" onclick="startMission()">ACTIVATE & START</button>
     </section>
 
     <section id="s1">
-        <div class="monitor-v8">
-            <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/320x200/000/00f3ff?text=PILOT+PHOTO+01'">
-            <div class="scanner-line"></div>
+        <div style="border: 2px solid var(--neon); padding: 10px; border-radius: 10px; margin-bottom: 20px;">
+            <img src="photo1.jpg" style="width: 250px; border-radius: 5px;" onerror="this.parentElement.style.display='none'">
         </div>
-        <span style="color:var(--neon); font-size:10px;">[ LOG 01: 35,000 FT ]</span>
-        <p class="terminal-txt" id="t1"></p>
-        <button class="btn-v8" onclick="go(2, 32000, 680, 'Never lose your Hot Wheels spark. In a world of serious faces, your playful heart is my favorite masterpiece.')">NEXT SECTOR</button>
+        <p id="t1" style="min-height: 80px;"></p>
+        <button class="btn" onclick="go(2, 35000, 850, 'Your Hot Wheels spark is my favorite story. Never change, Pilot.')">NEXT LOG</button>
     </section>
 
     <section id="s2">
-        <div class="monitor-v8">
-            <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/320x200/000/00f3ff?text=GARAGE+PHOTO+02'">
-            <div class="scanner-line"></div>
+        <h1 style="color:var(--gold);">THE HANGAR</h1>
+        <div class="gift-container">
+            <div class="gift-box c1" onclick="openTask('The RC Car')"><span>🏎️</span><label>UNIT 01</label></div>
+            <div class="gift-box c2" onclick="openTask('Teddy & Rose')"><span>🧸</span><label>UNIT 02</label></div>
+            <div class="gift-box c3" onclick="openTask('The Dress')"><span>👗</span><label>UNIT 03</label></div>
+            <div class="gift-box c4" onclick="openTask('New Slippers')"><span>👡</span><label>UNIT 04</label></div>
         </div>
-        <span style="color:var(--neon); font-size:10px;">[ LOG 02: TOY GARAGE ]</span>
-        <p class="terminal-txt" id="t2"></p>
-        <button class="btn-v8" onclick="go(3, 35000, 850, 'Frequency Secured. Your voice is the only signal I want to tune into. The Hangar is now in range. Choose your fuel.')">APPROACH HANGAR</button>
-    </section>
-
-    <section id="s3">
-        <h1 style="color:var(--gold); letter-spacing: 10px;">THE HANGAR</h1>
-        <div class="gift-grid">
-            <div class="box-unit" onclick="openTask('The RC Car')"><span>🏎️</span><label>Unit 01</label></div>
-            <div class="box-unit" onclick="openTask('Teddy & Rose')"><span>🧸</span><label>Unit 02</label></div>
-            <div class="box-unit" onclick="openTask('The Dress')"><span>👗</span><label>Unit 03</label></div>
-            <div class="box-unit" onclick="openTask('New Slippers')"><span>👡</span><label>Unit 04</label></div>
-        </div>
-
-        <div id="final-msg">
-            <h2 style="color:var(--neon); font-family: 'Orbitron';">MISSION SUCCESSFUL ✅</h2>
-            <p id="c-text" style="color: var(--gold); margin: 15px 0; font-size: 1.5rem; font-weight: bold;"></p>
-            <p style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.1rem;">"This is my secret promise. Landmark reached. ✈️"</p>
+        <div id="final" style="display:none; margin-top: 30px; border: 2px dashed var(--gold); padding: 20px;">
+            <h2 id="choice" style="color:var(--neon);"></h2>
+            <p>Mission Successful. See you at the horizon! ✈️</p>
         </div>
     </section>
 
-    <div id="task-overlay">
-        <div class="task-card">
-            <h2 style="font-family:'Orbitron'; color:var(--gold); font-size: 1.1rem;">ENCRYPTION DETECTED</h2>
-            <p style="font-size: 0.9rem; color: #ccc; line-height: 1.6; margin-top: 15px;">"He has the key but never unlocks his potential. She has the story but never tells it. Together, they form a perfect engine. Who is 'He'?"</p>
-            <input type="text" id="task-input" class="task-input" placeholder="DECODE...">
-            <button class="btn-v8" onclick="verify()">AUTHORIZE</button>
+    <div id="popup">
+        <div class="card">
+            <h3 style="color:var(--gold);">ENCRYPTION</h3>
+            <p style="font-size: 0.8rem;">"He has the key but never unlocks. Who is 'He'?"</p>
+            <input type="text" id="ans" class="input-field" placeholder="???">
+            <button class="btn" onclick="verify()">DECODE</button>
         </div>
     </div>
 
     <script>
-        // Synthesized Audio (No files needed!)
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function beep(freq = 800, duration = 100) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.frequency.value = freq; osc.type = 'square';
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration/1000);
-            osc.start(); osc.stop(audioCtx.currentTime + duration/1000);
+        // TILT EFFECT SENSOR REQUEST
+        function startMission() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                .then(response => {
+                    if (response == 'granted') {
+                        window.addEventListener('deviceorientation', handleTilt);
+                    }
+                });
+            } else {
+                window.addEventListener('deviceorientation', handleTilt);
+            }
+            go(1, 15000, 450, 'Watching you talk about aviation is where my sky begins.');
         }
 
-        // Cloud Generator
-        for(let i=0; i<12; i++) {
-            let cloud = document.createElement('div');
-            cloud.className = 'cloud-v8';
-            cloud.innerText = '☁️';
-            cloud.style.top = Math.random() * 90 + 'vh';
-            cloud.style.animationDelay = (Math.random() * 15) + 's';
-            document.getElementById('sky-v8').appendChild(cloud);
+        function handleTilt(e) {
+            const sky = document.getElementById('sky-v9');
+            const x = e.gamma / 4; // Left-Right tilt
+            const y = e.beta / 4;  // Front-Back tilt
+            sky.style.transform = `translate(${x}px, ${y}px)`;
         }
 
-        function initFlight() {
-            audioCtx.resume();
-            beep(600, 200);
-            go(1, 15000, 420, 'Watching you talk about aviation is where I find my horizon. You carry the sky in your soul, Pilot.');
-        }
-
-        function go(num, alt, spd, txt) {
-            beep(800, 100);
+        // NAVIGATION
+        function go(n, alt, spd, txt) {
             document.querySelector('section.active').classList.remove('active');
-            document.getElementById(`s${num}`).classList.add('active');
-            
-            document.getElementById('alt-val').innerText = alt;
-            document.getElementById('spd-val').innerText = spd;
-            document.getElementById('p-line').style.width = (num * 33.3) + "%";
+            document.getElementById(`s${n}`).classList.add('active');
+            document.getElementById('alt').innerText = alt;
+            document.getElementById('spd').innerText = spd;
+            document.getElementById('pb').style.width = (n * 50) + "%";
 
-            const el = document.getElementById(`t${num}`);
-            if(el) {
-                el.innerHTML = "";
-                let i = 0;
+            let i = 0;
+            const target = document.getElementById(`t${n}`);
+            if(target) {
+                target.innerText = "";
                 function type() {
-                    if (i < txt.length) {
-                        el.innerHTML += txt.charAt(i);
-                        i++;
-                        setTimeout(type, 35);
+                    if(i < txt.length) {
+                        target.innerText += txt.charAt(i);
+                        i++; setTimeout(type, 40);
                     }
                 }
                 type();
             }
         }
 
-        let choice = "";
+        let selected = "";
         function openTask(g) {
-            beep(1000, 50);
-            choice = g;
-            document.getElementById('task-overlay').style.display = 'flex';
+            selected = g;
+            document.getElementById('popup').style.display = 'flex';
         }
 
         function verify() {
-            const val = document.getElementById('task-input').value.toLowerCase().trim();
+            const val = document.getElementById('ans').value.toLowerCase().trim();
             if(val === "hot wheels") {
-                beep(1200, 500);
-                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                document.getElementById('task-overlay').style.display = 'none';
-                document.querySelector('.gift-grid').style.display = 'none';
-                document.getElementById('c-text').innerText = "LOCK: " + choice;
-                document.getElementById('final-msg').style.display = 'block';
-            } else { 
-                beep(200, 500);
-                alert("ACCESS DENIED!"); 
-            }
+                document.getElementById('popup').style.display = 'none';
+                document.querySelector('.gift-container').style.display = 'none';
+                document.getElementById('choice').innerText = "LOCKED: " + selected;
+                document.getElementById('final').style.display = 'block';
+            } else { alert("WRONG KEY!"); }
         }
 
-        // Tilt Interaction
-        window.addEventListener('deviceorientation', (e) => {
-            const x = e.gamma / 5;
-            const y = e.beta / 5;
-            document.getElementById('sky-v8').style.transform = `translate(${x}px, ${y}px)`;
-        });
+        // Clouds
+        const sky = document.getElementById('sky-v9');
+        for(let i=0; i<10; i++) {
+            let c = document.createElement('div');
+            c.className = 'cloud'; c.innerText = '☁️';
+            c.style.top = Math.random() * 80 + 'vh';
+            c.style.animationDelay = Math.random() * 15 + 's';
+            sky.appendChild(c);
+        }
     </script>
 </body>
 </html>
