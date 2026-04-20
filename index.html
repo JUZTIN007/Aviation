@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | Private Logbook</title>
+    <title>Flight 0425 | The Private Odyssey</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
@@ -12,33 +12,31 @@
         :root { --gold: #c5a059; --dark: #020305; --neon-green: #00ff41; }
         body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         
-        /* Cockpit Radar Effect */
+        /* Cockpit Radar Sweep Background */
         #sky-bg { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #0a150a 0%, #020205 100%); z-index: -1; }
-        .radar-sweep { position: fixed; width: 200%; height: 200%; top: -50%; left: -50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 255, 65, 0.1) 20deg, transparent 40deg); animation: sweep 6s linear infinite; z-index: 0; pointer-events: none; }
-        .grid-overlay { position: fixed; width: 100%; height: 100%; background-image: radial-gradient(var(--neon-green) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.1; z-index: 0; pointer-events: none; }
-        
+        .radar-sweep { position: fixed; width: 200%; height: 200%; top: -50%; left: -50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 255, 65, 0.08) 20deg, transparent 40deg); animation: sweep 8s linear infinite; z-index: 0; pointer-events: none; }
+        .grid-overlay { position: fixed; width: 100%; height: 100%; background-image: radial-gradient(var(--neon-green) 1px, transparent 1px); background-size: 50px 50px; opacity: 0.1; z-index: 0; pointer-events: none; }
         @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        section { min-height: 100vh; display: flex; align-items: center; justify-content: space-around; padding: 0 10%; position: relative; border-bottom: 1px solid rgba(0, 255, 65, 0.05); }
+        section { min-height: 100vh; display: flex; align-items: center; justify-content: space-around; padding: 0 10%; position: relative; }
         
         .monitor-frame { background: #000; border: 2px solid #1a1a1a; padding: 15px; border-radius: 5px; box-shadow: 0 0 30px rgba(0, 255, 65, 0.1); max-width: 350px; position: relative; }
-        .monitor-frame::before { content: "DATA_FEED: ACTIVE"; position: absolute; top: -20px; left: 0; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--neon-green); letter-spacing: 2px; }
-        .monitor-frame img { width: 100%; display: block; filter: grayscale(30%) contrast(1.2); border: 1px solid #333; }
+        .monitor-frame img { width: 100%; display: block; filter: contrast(1.1); border: 1px solid #222; }
+        .monitor-frame::after { content: "LIVE_FEED_SECURED"; position: absolute; bottom: -20px; right: 0; font-family: 'JetBrains Mono'; font-size: 9px; color: var(--neon-green); opacity: 0.6; }
 
         .content-card { max-width: 600px; z-index: 3; opacity: 0; transform: translateY(50px); }
-        .alt-label { font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--neon-green); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .alt-label { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--neon-green); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; display: block; }
         h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); margin: 0; color: var(--gold); line-height: 1.1; }
-        p.poetic-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; line-height: 1.7; color: #e0e0e0; margin-top: 25px; }
-        
-        .coordinates { font-family: 'JetBrains Mono'; font-size: 12px; opacity: 0.4; margin-top: 15px; color: var(--neon-green); }
+        p.poetic-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; line-height: 1.7; color: #e0e0e0; margin-top: 30px; }
 
-        /* Final Button Section */
+        /* The Secret Hangar Choice */
         .gift-hangar { text-align: center; max-width: 800px; }
-        .box-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
-        .box-card { background: rgba(255, 255, 255, 0.02); border: 1px solid #222; padding: 40px; border-radius: 10px; cursor: pointer; transition: 0.4s; font-size: 50px; }
-        .box-card:hover { border-color: var(--gold); background: rgba(197, 160, 89, 0.05); transform: translateY(-10px); }
+        .box-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-top: 50px; }
+        .box-card { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 45px; border-radius: 15px; cursor: pointer; transition: 0.4s; font-size: 60px; }
+        .box-card:hover { border-color: var(--gold); background: rgba(197, 160, 89, 0.08); transform: translateY(-10px); }
         
-        #final-message { display: none; margin-top: 40px; border: 1px dashed var(--gold); padding: 30px; border-radius: 10px; background: rgba(197, 160, 89, 0.05); }
+        #final-promise { display: none; margin-top: 50px; border: 1px dashed var(--gold); padding: 40px; border-radius: 15px; background: rgba(197, 160, 89, 0.05); animation: glow 2s infinite alternate; }
+        @keyframes glow { from { box-shadow: 0 0 5px var(--gold); } to { box-shadow: 0 0 20px var(--gold); } }
     </style>
 </head>
 <body>
@@ -49,56 +47,55 @@
 
     <section>
         <div class="content-card" style="opacity: 1; transform: none;">
-            <span class="alt-label">Mission: Flight 0425</span>
+            <span class="alt-label">Initialization: Flight 0425</span>
             <h1>The April Odyssey.</h1>
-            <p class="poetic-text">"They say pilots are in love with the sky. But I found a girl who carries the entire sky within her. This is our flight record—the moments where time stood still."</p>
-            <div class="coordinates">LAT: 13.0827° N | LONG: 80.2707° E</div>
+            <p class="poetic-text">"To the girl who carries the entire sky within her eyes. This is our log—the records of a journey that was never meant for the ground."</p>
         </div>
     </section>
 
     <section>
         <div class="content-card">
             <span class="alt-label">Log 01 // Altitude: 35,000 FT</span>
-            <h1>Higher than Clouds.</h1>
-            <p class="poetic-text">"Watching your eyes light up when you talk about aviation is like seeing a engine roar to life. You weren't built for the ground. You were meant to chase horizons, and I'm just lucky to be your co-pilot in this journey."</p>
+            <h1>Sky-Bound Soul.</h1>
+            <p class="poetic-text">"Whenever you speak of aviation, your eyes ignite. You were built for the horizon, not the ground. Watching you chase those dreams is my favorite destination."</p>
         </div>
-        <div class="monitor-frame"><img src="photo1.jpg"></div>
+        <div class="monitor-frame"><img src="photo1.jpg" alt="Moment 1"></div>
     </section>
 
     <section style="flex-direction: row-reverse;">
         <div class="content-card">
             <span class="alt-label">Log 02 // Storage: Toy Garage</span>
             <h1>Pure Gravity.</h1>
-            <p class="poetic-text">"In a world obsessed with being 'mass' and serious, your love for Hot Wheels is the most beautiful thing I've seen. Never lose that childish spark—it's the fuel that makes you rare."</p>
+            <p class="poetic-text">"In a world rushing to grow up, your love for Hot Wheels and that childish spark is the most authentic thing about you. Never stop playing."</p>
         </div>
-        <div class="monitor-frame" style="transform: perspective(1000px) rotateY(10deg);"><img src="photo2.jpg"></div>
+        <div class="monitor-frame" style="transform: perspective(1000px) rotateY(10deg);"><img src="photo2.jpg" alt="Moment 2"></div>
     </section>
 
     <section>
         <div class="content-card">
-            <span class="alt-label">Log 03 // Frequency: Hidden Depths</span>
+            <span class="alt-label">Log 03 // Frequency: Hidden Depth</span>
             <h1>The Silent Hero.</h1>
-            <p class="poetic-text">"You worry you talk too much, but I'd listen to your frequency forever. Behind that smile, I see the strength of a girl who has fought storms alone. You're stronger than any engine."</p>
+            <p class="poetic-text">"You worry you talk too much, but I'd tune into your frequency forever. Behind that 'mass' smile, you're stronger than any storm. You're my hero."</p>
         </div>
-        <div class="monitor-frame"><img src="photo3.jpg"></div>
+        <div class="monitor-frame"><img src="photo3.jpg" alt="Moment 3"></div>
     </section>
 
     <section>
         <div class="content-card gift-hangar">
-            <span class="alt-label">Final Approach // Destination: 25-04</span>
+            <span class="alt-label">Destination Reached // 25-04</span>
             <h1>The Secret Hangar.</h1>
-            <p class="poetic-text">"Our journey reaches its destination. Pick the surprise you want me to bring to your future."</p>
+            <p class="poetic-text">"Our journey reaches its peak. Pick a token for our future adventure."</p>
             
             <div class="box-grid">
-                <div class="box-card" onclick="revealGift('RC Car')">🏎️</div>
-                <div class="box-item box-card" onclick="revealGift('Teddy & Rose')">🧸</div>
-                <div class="box-item box-card" onclick="revealGift('The Dress')">👗</div>
-                <div class="box-item box-card" onclick="revealGift('New Slippers')">👡</div>
+                <div class="box-card" onclick="revealPromise('The RC Car Adventure')">🏎️</div>
+                <div class="box-card" onclick="revealPromise('The Teddy & Rose Comfort')">🧸</div>
+                <div class="box-card" onclick="revealPromise('The Aero-Style Dress')">👗</div>
+                <div class="box-card" onclick="revealPromise('The Cloud-Walk Steps')">👡</div>
             </div>
 
-            <div id="final-message">
-                <h2 style="color:var(--gold); font-family: 'Playfair Display';">Choice Locked: <span id="gift-name"></span></h2>
-                <p class="poetic-text" style="font-size: 1.1rem;">"Decision recorded. I'll bring this to you soon. Consider it a promise for our next chapter. ✈️"</p>
+            <div id="final-promise">
+                <h2 style="color:var(--gold); font-family: 'Playfair Display'; margin: 0;">Choice Recorded: <span id="gift-type"></span></h2>
+                <p class="poetic-text" style="font-size: 1.1rem;">"Consider this a secret promise between us. I'll bring this to your world very soon. Ready for the next chapter? ✈️"</p>
             </div>
         </div>
     </section>
@@ -106,7 +103,7 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Scroll animations
+        // Story Reveal on Scroll
         gsap.utils.toArray(".content-card").forEach(card => {
             gsap.to(card, {
                 scrollTrigger: { trigger: card, start: "top 80%" },
@@ -114,12 +111,15 @@
             });
         });
 
-        // Simple Gift Reveal
-        function revealGift(name) {
+        // Secret Promise Reveal
+        function revealPromise(name) {
             document.querySelector('.box-grid').style.display = 'none';
-            document.getElementById('gift-name').innerText = name;
-            document.getElementById('final-message').style.display = 'block';
-            gsap.from("#final-message", { scale: 0.9, opacity: 0, duration: 1 });
+            document.getElementById('gift-type').innerText = name;
+            document.getElementById('final-promise').style.display = 'block';
+            gsap.from("#final-promise", { scale: 0.9, opacity: 0, duration: 1, ease: "back.out(1.7)" });
+            
+            // Scroll to the promise
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
 </body>
