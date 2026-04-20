@@ -3,189 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | The Final Odyssey</title>
+    <title>Flight 0425 | The Odyssey</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gold: #c5a059; --dark: #010203; --neon: #00ff00; }
-        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        :root { --gold: #c5a059; --dark: #020308; --neon: #00f3ff; --action: #ff0055; --radar: rgba(0, 255, 65, 0.2); }
+        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         
-        /* 3D Sky Background */
-        #sky-bg { position: fixed; width: 100%; height: 100%; background: linear-gradient(to bottom, #0a1a26 0%, #020205 100%); z-index: -1; }
-        .cloud { position: fixed; opacity: 0.1; pointer-events: none; z-index: -1; filter: blur(5px); }
-        .bg-plane { position: fixed; font-size: 30px; opacity: 0.15; z-index: -1; pointer-events: none; }
+        /* 3D Sky & Flying Plane */
+        #sky-canvas { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%); z-index: -1; }
+        .cloud { position: fixed; font-size: 100px; opacity: 0.1; z-index: -1; pointer-events: none; filter: blur(8px); }
+        .hero-plane { position: fixed; font-size: 60px; z-index: 1; pointer-events: none; filter: drop-shadow(0 0 15px var(--neon)); transition: 0.3s; top: 20%; left: -10%; }
 
-        /* HUD & Progress */
-        .hud-line { position: fixed; border: 1px solid rgba(0, 255, 0, 0.1); pointer-events: none; z-index: 100; }
-        .hud-v { width: 1px; height: 100vh; left: 15px; }
-        .hud-h { height: 1px; width: 100vw; top: 15px; }
-        .flight-progress { position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: var(--neon); z-index: 1000; box-shadow: 0 0 10px var(--neon); }
+        /* HUD Scanner */
+        .hud-scanner { position: fixed; top: 0; left: 0; width: 100%; height: 2px; background: var(--neon); box-shadow: 0 0 15px var(--neon); z-index: 1000; animation: scan 6s linear infinite; opacity: 0.4; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100vh; } }
 
         section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 10%; position: relative; }
         
-        /* Glassmorphism Monitor */
-        .monitor-frame { background: rgba(0, 0, 0, 0.8); border: 2px solid #222; padding: 15px; border-radius: 10px; box-shadow: 0 0 40px rgba(0, 255, 0, 0.1); width: 100%; max-width: 320px; transform: perspective(1000px) rotateX(10deg); transition: 0.5s; opacity: 0; }
-        .monitor-frame img { width: 100%; border-radius: 5px; display: block; filter: contrast(1.1); }
-        .monitor-frame.unlocked { opacity: 1; transform: rotateX(0deg); border-color: var(--neon); }
+        /* Monitor Frames */
+        .monitor-3d { background: rgba(0, 0, 0, 0.9); border: 2px solid var(--neon); padding: 10px; border-radius: 5px; box-shadow: 0 0 40px rgba(0, 243, 255, 0.2); transform: perspective(1000px) rotateY(-10deg); opacity: 0; transition: 1s; }
+        .monitor-3d.active { opacity: 1; transform: rotateY(0deg); }
+        .monitor-3d img { width: 100%; max-width: 320px; border-radius: 3px; }
 
-        .content-card { max-width: 600px; z-index: 3; text-align: center; }
-        h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin: 0; color: var(--gold); }
-        .alt-label { font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--neon); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 10px; display: block; }
-        .typewriter { font-family: 'JetBrains Mono'; font-size: 0.9rem; line-height: 1.6; color: #ccc; margin-top: 20px; min-height: 100px; }
-
-        /* Hangar Grid */
-        .hangar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; width: 100%; }
-        .gift-box { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 35px 0; border-radius: 15px; font-size: 50px; cursor: pointer; transition: 0.4s; position: relative; }
-        .gift-box:hover { transform: translateY(-10px); border-color: var(--gold); background: rgba(197, 160, 89, 0.05); }
-        .gift-box::after { content: "LOCKED"; position: absolute; bottom: 10px; left: 0; width: 100%; font-size: 10px; font-family: 'JetBrains Mono'; color: #555; }
-
-        /* Quiz Overlay */
-        #quiz-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 2000; align-items: center; justify-content: center; text-align: center; }
-        .quiz-card { padding: 35px; border: 1px solid var(--neon); background: #000; border-radius: 20px; width: 85%; max-width: 400px; }
-        .quiz-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: white; font-size: 1.2rem; text-align: center; width: 100%; margin: 25px 0; outline: none; }
-    </style>
-</head>
-<body>
-
-    <div id="sky-bg"></div>
-    <div class="hud-line hud-v"></div>
-    <div class="hud-line hud-h"></div>
-    <div class="flight-progress" id="progress"></div>
-
-    <section>
-        <div class="content-card">
-            <span class="alt-label">Initialization // Flight 0425</span>
-            <h1>The April Odyssey.</h1>
-            <p style="font-family: 'JetBrains Mono'; font-size: 12px; color: var(--neon); margin-top: 20px;">[ SCROLL TO START TAKE-OFF ]</p>
-        </div>
-    </section>
-
-    <section>
-        <div class="monitor-frame"><img src="photo1.jpg"></div>
-        <div class="content-card">
-            <span class="alt-label">LOG 01 // 35,000 FT</span>
-            <div class="typewriter" id="text1"></div>
-        </div>
-    </section>
-
-    <section style="flex-direction: column-reverse;">
-        <div class="monitor-frame"><img src="photo2.jpg"></div>
-        <div class="content-card">
-            <span class="alt-label">LOG 02 // TOY GARAGE</span>
-            <div class="typewriter" id="text2"></div>
-        </div>
-    </section>
-
-    <section>
-        <div class="monitor-frame"><img src="photo3.jpg"></div>
-        <div class="content-card">
-            <span class="alt-label">LOG 03 // RADAR DEPTHS</span>
-            <div class="typewriter" id="text3"></div>
-        </div>
-    </section>
-
-    <section id="hangar">
-        <div class="content-card">
-            <span class="alt-label">FINAL DESTINATION // 25-04</span>
-            <h1>The Secret Hangar.</h1>
-            <p style="font-family: 'JetBrains Mono'; font-size: 11px; margin-top: 10px;">Select your fuel for the next chapter.</p>
-            
-            <div class="hangar-grid">
-                <div class="gift-box" onclick="startTask('RC Car', 'SKY-RC-007')">🎁</div>
-                <div class="gift-box" onclick="startTask('Teddy & Rose', 'AERO-HUG-025')">🎁</div>
-                <div class="gift-box" onclick="startTask('The Dress', 'STYLE-FLY-04')">🎁</div>
-                <div class="gift-box" onclick="startTask('New Slippers', 'CLOUD-WALK-01')">🎁</div>
-            </div>
-
-            <div id="final-reveal" style="display:none; margin-top: 40px; border: 1px dashed var(--neon); padding: 20px;">
-                <p class="alt-label" style="color: var(--gold);">CLEARANCE GRANTED ✅</p>
-                <p id="secret-id" style="font-family: 'JetBrains Mono'; font-size: 1.5rem; letter-spacing: 5px;"></p>
-                <p style="font-family: 'Playfair Display'; font-style: italic; font-size: 0.9rem; margin-top: 15px;">"This is my promise to you. Landmark reached. ✈️"</p>
-            </div>
-        </div>
-    </section>
-
-    <div id="quiz-overlay">
-        <div class="quiz-card">
-            <p style="font-family: 'JetBrains Mono'; font-size: 13px; color: var(--gold);">AUTHORIZATION REQUIRED</p>
-            <p style="margin-top: 20px; font-size: 0.9rem;">He has the key but never unlocks his potential. She has the story but never tells it. Together, they form a perfect engine. Who is 'He'?</p>
-            <input type="text" id="quiz-input" class="quiz-input" placeholder="Type answer...">
-            <button onclick="checkTask()" style="background: var(--neon); color: black; border: none; padding: 10px 30px; font-weight: bold; border-radius: 5px; cursor: pointer;">DECODE</button>
-        </div>
-    </div>
-
-    <script>
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Background Elements
-        for(let i=0; i<10; i++) {
-            let cloud = document.createElement('div');
-            cloud.className = 'cloud';
-            cloud.innerText = '☁️';
-            cloud.style.left = Math.random() * 100 + 'vw';
-            cloud.style.top = Math.random() * 100 + 'vh';
-            cloud.style.fontSize = (Math.random() * 100 + 50) + 'px';
-            document.body.appendChild(cloud);
-        }
-
-        // Flight Progress & Scroll Effects
-        window.addEventListener('scroll', () => {
-            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-            document.getElementById('progress').style.width = scrollPercent + "%";
-            gsap.to(".cloud", { y: -window.scrollY * 0.2, overwrite: true });
-        });
-
-        // Content Reveal & Typewriter
-        const logs = [
-            "Watching you talk about aviation is like seeing an engine roar to life. You weren't built for the ground. You were meant to chase horizons, and I'm lucky to be your co-pilot.",
-            "In a world of serious faces, your Hot Wheels passion is what makes you rare. Never lose that childish spark, Pilot. It's the fuel that makes you masterpiece.",
-            "Behind that cheerful 'mass' smile, I see a girl who has won wars alone. You worry you talk too much, but your voice is the only frequency I tune into."
-        ];
-
-        gsap.utils.toArray(".monitor-frame").forEach((mon, i) => {
-            ScrollTrigger.create({
-                trigger: mon,
-                start: "top 80%",
-                onEnter: () => {
-                    mon.classList.add('unlocked');
-                    typeWriter(logs[i], `text${i+1}`);
-                }
-            });
-        });
-
-        function typeWriter(text, id) {
-            let i = 0;
-            const el = document.getElementById(id);
-            if(el.innerHTML !== "") return;
-            function type() {
-                if (i < text.length) {
-                    el.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, 30);
-                }
-            }
-            type();
-        }
-
-        // Task Logic
-        let selectedID = "";
-        function startTask(gift, id) {
-            selectedID = id;
-            document.getElementById('quiz-overlay').style.display = 'flex';
-        }
-
-        function checkTask() {
-            const ans = document.getElementById('quiz-input').value.toLowerCase().trim();
-            if(ans === "hot wheels") {
-                document.getElementById('quiz-overlay').style.display = 'none';
-                document.querySelector('.hangar-grid').style.display = 'none';
-                document.getElementById('secret-id').innerText = selectedID;
-                document.getElementById('final-reveal').style.display = 'block';
-                gsap.from("#final-reveal", { scale: 0.8, opacity: 0, duration: 1 });
-            } else { alert("Clearance Denied!"); }
-        }
-    </script>
-</body>
-</html>
+        .story-card { max-width: 600px; text-align: center; margin-top: 30px; opacity: 0; transform: translateY(30px); }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: var(--neon); letter-spacing: 5px; text-shadow: 0 0 10px var(--neon); }
+        p.poetic { font-family: 'Playfair Display',
