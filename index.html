@@ -3,123 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | The Private Odyssey</title>
+    <title>Flight 0425 | Private Logbook</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gold: #c5a059; --dark: #020305; --neon-green: #00ff41; }
-        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        :root { --gold: #c5a059; --dark: #010203; --neon: #00ff00; }
+        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: crosshair; }
         
-        /* Cockpit Radar Sweep Background */
+        /* 3D Flying Plane Background */
         #sky-bg { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #0a150a 0%, #020205 100%); z-index: -1; }
-        .radar-sweep { position: fixed; width: 200%; height: 200%; top: -50%; left: -50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 255, 65, 0.08) 20deg, transparent 40deg); animation: sweep 8s linear infinite; z-index: 0; pointer-events: none; }
-        .grid-overlay { position: fixed; width: 100%; height: 100%; background-image: radial-gradient(var(--neon-green) 1px, transparent 1px); background-size: 50px 50px; opacity: 0.1; z-index: 0; pointer-events: none; }
-        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
+        #moving-plane { position: fixed; font-size: 50px; z-index: 1; filter: drop-shadow(0 0 10px rgba(0, 255, 65, 0.4)); transform-origin: center; transition: 0.1s; pointer-events: none; }
+        
         section { min-height: 100vh; display: flex; align-items: center; justify-content: space-around; padding: 0 10%; position: relative; }
         
-        .monitor-frame { background: #000; border: 2px solid #1a1a1a; padding: 15px; border-radius: 5px; box-shadow: 0 0 30px rgba(0, 255, 65, 0.1); max-width: 350px; position: relative; }
-        .monitor-frame img { width: 100%; display: block; filter: contrast(1.1); border: 1px solid #222; }
-        .monitor-frame::after { content: "LIVE_FEED_SECURED"; position: absolute; bottom: -20px; right: 0; font-family: 'JetBrains Mono'; font-size: 9px; color: var(--neon-green); opacity: 0.6; }
+        .monitor { background: #000; border: 3px solid #1a1a1a; padding: 15px; border-radius: 5px; box-shadow: 0 0 40px rgba(0, 255, 65, 0.1); max-width: 320px; transform: perspective(1000px) rotateY(-10deg); transition: 0.5s; position: relative; }
+        .monitor img { width: 100%; display: block; filter: contrast(1.1); border: 1px solid #333; }
+        .monitor::after { content: "DATA_FEED: SECURED"; position: absolute; bottom: -20px; right: 0; font-family: 'JetBrains Mono'; font-size: 9px; color: var(--neon); opacity: 0.6; }
 
         .content-card { max-width: 600px; z-index: 3; opacity: 0; transform: translateY(50px); }
-        .alt-label { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--neon-green); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; display: block; }
         h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); margin: 0; color: var(--gold); line-height: 1.1; }
         p.poetic-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; line-height: 1.7; color: #e0e0e0; margin-top: 30px; }
+        .alt-label { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--neon); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; display: block; }
 
-        /* The Secret Hangar Choice */
+        /* Secret Hangar Task */
         .gift-hangar { text-align: center; max-width: 800px; }
         .box-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-top: 50px; }
-        .box-card { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 45px; border-radius: 15px; cursor: pointer; transition: 0.4s; font-size: 60px; }
-        .box-card:hover { border-color: var(--gold); background: rgba(197, 160, 89, 0.08); transform: translateY(-10px); }
+        .box-card { background: rgba(255, 255, 255, 0.03); border: 2px solid #333; padding: 45px; border-radius: 15px; cursor: pointer; transition: 0.4s; font-size: 60px; filter: grayscale(1); position: relative; }
+        .box-card::after { content: "🔒 LOCKED"; position: absolute; bottom: 10px; left: 0; width: 100%; font-family: 'JetBrains Mono'; font-size: 10px; color: #ff3b3b; text-align: center; }
+        .box-card:hover { transform: scale(1.05); }
+        .box-unlocked { filter: grayscale(0) drop-shadow(0 0 15px var(--gold)); border-color: var(--gold); }
+        .box-unlocked::after { content: "🔓 OPEN"; color: var(--gold); }
+
+        /* Quiz Task Overlay */
+        #quiz-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; text-align: center; }
+        .quiz-card { padding: 40px; border: 1px solid var(--gold); border-radius: 20px; max-width: 500px; background: #050508; margin: 20px; box-shadow: 0 0 30px rgba(197, 160, 89, 0.3); }
+        .quiz-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: white; font-size: 1.5rem; text-align: center; outline: none; margin: 30px 0; width: 100%; font-family: 'JetBrains Mono'; }
         
-        #final-promise { display: none; margin-top: 50px; border: 1px dashed var(--gold); padding: 40px; border-radius: 15px; background: rgba(197, 160, 89, 0.05); animation: glow 2s infinite alternate; }
-        @keyframes glow { from { box-shadow: 0 0 5px var(--gold); } to { box-shadow: 0 0 20px var(--gold); } }
+        #final-message { display: none; margin-top: 50px; border: 1px dashed var(--gold); padding: 40px; border-radius: 15px; background: rgba(197, 160, 89, 0.05); text-align: center; }
+        .secret-name { font-family: 'JetBrains Mono'; font-size: 2.2rem; color: var(--neon); margin: 20px 0; text-transform: uppercase; letter-spacing: 10px; }
     </style>
 </head>
 <body>
 
     <div id="sky-bg"></div>
-    <div class="radar-sweep"></div>
-    <div class="grid-overlay"></div>
+    <div id="moving-plane">✈️</div>
 
     <section>
         <div class="content-card" style="opacity: 1; transform: none;">
-            <span class="alt-label">Initialization: Flight 0425</span>
+            <span class="alt-label">SYSTEM_INIT: FLIGHT 0425</span>
             <h1>The April Odyssey.</h1>
-            <p class="poetic-text">"To the girl who carries the entire sky within her eyes. This is our log—the records of a journey that was never meant for the ground."</p>
+            <p class="poetic-text">"watching you talk about aviation is like seeing a engine roar to life. Watch closely, the journey is about to begin."</p>
         </div>
     </section>
 
     <section>
         <div class="content-card">
-            <span class="alt-label">Log 01 // Altitude: 35,000 FT</span>
-            <h1>Sky-Bound Soul.</h1>
-            <p class="poetic-text">"Whenever you speak of aviation, your eyes ignite. You were built for the horizon, not the ground. Watching you chase those dreams is my favorite destination."</p>
+            <span class="alt-label">LOG 01 // Altitude: 35,000 FT</span>
+            <h1>Higher than Clouds.</h1>
+            <p class="poetic-text">"You weren't meant for the ground. Watches closely, the flight is just beginning, and I’m just lucky to be in your co-pilot path."</p>
         </div>
-        <div class="monitor-frame"><img src="photo1.jpg" alt="Moment 1"></div>
+        <div class="monitor"><img src="photo1.jpg"></div>
     </section>
 
     <section style="flex-direction: row-reverse;">
         <div class="content-card">
-            <span class="alt-label">Log 02 // Storage: Toy Garage</span>
+            <span class="alt-label">LOG 02 // TOY GARAGE</span>
             <h1>Pure Gravity.</h1>
-            <p class="poetic-text">"In a world rushing to grow up, your love for Hot Wheels and that childish spark is the most authentic thing about you. Never stop playing."</p>
+            <p class="poetic-text">"In a world rushing to grow up, your love for Hot Wheels is the most authentic spark I've seen. Watches closely, every tiny wheel has a story."</p>
         </div>
-        <div class="monitor-frame" style="transform: perspective(1000px) rotateY(10deg);"><img src="photo2.jpg" alt="Moment 2"></div>
+        <div class="monitor" style="transform: perspective(1000px) rotateY(10deg);"><img src="photo2.jpg"></div>
     </section>
 
     <section>
         <div class="content-card">
-            <span class="alt-label">Log 03 // Frequency: Hidden Depth</span>
-            <h1>The Silent Hero.</h1>
-            <p class="poetic-text">"You worry you talk too much, but I'd tune into your frequency forever. Behind that 'mass' smile, you're stronger than any storm. You're my hero."</p>
+            <span class="alt-label">LOG 03 // RADAR SCAN: DEPTHS</span>
+            <h1>Silent Strength.</h1>
+            <p class="poetic-text">"You worry you talk too much, but your voice is the only frequency I tune into. Watches closely, there's a storm breaker behind that cheerful smile."</p>
         </div>
-        <div class="monitor-frame"><img src="photo3.jpg" alt="Moment 3"></div>
+        <div class="monitor"><img src="photo3.jpg"></div>
     </section>
 
-    <section>
+    <section id="hangar">
         <div class="content-card gift-hangar">
-            <span class="alt-label">Destination Reached // 25-04</span>
-            <h1>The Secret Hangar.</h1>
-            <p class="poetic-text">"Our journey reaches its peak. Pick a token for our future adventure."</p>
+            <span class="alt-label">FINAL DESTINATION // THE HANGAR</span>
+            <h1>Lockdown Protocol.</h1>
+            <p class="poetic-text">"The hangar is sealed. To unlock a box, you must prove you are the co-pilot of my story. Watches closely, the final challenge is here."</p>
             
-            <div class="box-grid">
-                <div class="box-card" onclick="revealPromise('The RC Car Adventure')">🏎️</div>
-                <div class="box-card" onclick="revealPromise('The Teddy & Rose Comfort')">🧸</div>
-                <div class="box-card" onclick="revealPromise('The Aero-Style Dress')">👗</div>
-                <div class="box-card" onclick="revealPromise('The Cloud-Walk Steps')">👡</div>
+            <div class="box-grid" id="boxes">
+                <div class="box-card" id="b1" onclick="openHangar('RC Car', 'b1')">🎁</div>
+                <div class="box-card" id="b2" onclick="openHangar('Teddy & Rose', 'b2')">🎁</div>
+                <div class="box-card" id="b3" onclick="openHangar('The Dress', 'b3')">🎁</div>
+                <div class="box-card" id="b4" onclick="openHangar('New Slippers', 'b4')">🎁</div>
             </div>
 
-            <div id="final-promise">
-                <h2 style="color:var(--gold); font-family: 'Playfair Display'; margin: 0;">Choice Recorded: <span id="gift-type"></span></h2>
-                <p class="poetic-text" style="font-size: 1.1rem;">"Consider this a secret promise between us. I'll bring this to your world very soon. Ready for the next chapter? ✈️"</p>
+            <div id="final-message">
+                <h2 style="color:var(--gold); font-family: 'Playfair Display'; margin: 0;">DESTINATION REACHED ✅</h2>
+                <p id="promise-text" class="poetic-text" style="font-size: 1.1rem;">"Consider this a private promise. I will bring this to your world very soon. Ready for takeoff? ✈️"</p>
             </div>
         </div>
     </section>
+
+    <div id="quiz-overlay">
+        <div class="quiz-card">
+            <h2 style="color:var(--gold); font-family: 'Playfair Display';">Hangar Clearance</h2>
+            <p>He has the key but never unlocks his potential. She has the story but never tells it. Together, they form a perfect engine. Who is 'He'?</p>
+            <input type="text" id="quiz-answer" class="quiz-input" placeholder="Type answer...">
+            <button onclick="checkClearance()" style="background:var(--gold); border:none; padding:15px 30px; font-weight:bold; cursor:pointer; border-radius:5px;">SUBMIT CLEARANCE</button>
+        </div>
+    </div>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Story Reveal on Scroll
-        gsap.utils.toArray(".content-card").forEach(card => {
-            gsap.to(card, {
-                scrollTrigger: { trigger: card, start: "top 80%" },
-                opacity: 1, y: 0, duration: 1.5, ease: "power4.out"
-            });
+        // Plane Mouse Follow
+        const plane = document.getElementById('moving-plane');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(plane, { x: e.clientX - 25, y: e.clientY - 25, duration: 0.1 });
+            plane.innerText = (e.clientX < window.innerWidth / 2) ? "✈️" : "🛩️";
         });
 
-        // Secret Promise Reveal
-        function revealPromise(name) {
-            document.querySelector('.box-grid').style.display = 'none';
-            document.getElementById('gift-type').innerText = name;
-            document.getElementById('final-promise').style.display = 'block';
-            gsap.from("#final-promise", { scale: 0.9, opacity: 0, duration: 1, ease: "back.out(1.7)" });
-            
-            // Scroll to the promise
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        // Story Reveal
+        gsap.utils.toArray(".content-card").forEach(card => {
+            gsap.to(card, { scrollTrigger: { trigger: card, start: "top 80%" }, opacity: 1, y: 0, duration: 1.5 });
+        });
+
+        let selectedGift = "";
+        let currentBoxId = "";
+        const quizLogic = { answer: "hot wheels" };
+
+        function openHangar(gift, boxId) {
+            selectedGift = gift;
+            currentBoxId = boxId;
+            document.getElementById('quiz-overlay').style.display = 'flex';
+        }
+
+        function checkClearance() {
+            const userAns = document.getElementById('quiz-answer').value.toLowerCase().trim();
+            if(userAns === quizLogic.answer) {
+                document.getElementById('quiz-overlay').style.display = 'none';
+                unlockBox(selectedGift, currentBoxId);
+            } else {
+                alert("Access Denied! Think childlishly, Pilot...");
+            }
+        }
+
+        function unlockBox(gift, boxId) {
+            // Box unlock animation
+            const box = document.getElementById(boxId);
+            box.classList.add('box-unlocked');
+            box.innerText = "📦✨";
+            box.onclick = null; // Disable future quiz on this box
+
+            // Final reveal
+            document.getElementById('boxes').style.display = 'none';
+            document.getElementById('final-message').style.display = 'block';
+            gsap.from("#final-message", { y: 30, opacity: 0, scale: 0.9, duration: 1, ease: "back.out(1.7)" });
         }
     </script>
 </body>
