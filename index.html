@@ -1,192 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | Mission Control</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { --neon: #00f3ff; --gold: #c5a059; --dark: #010208; --red: #ff3b3b; --green: #00ff88; }
-        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flight 0425</title>
 
-        /* 3D Sky & Background */
-        #sky-v10 { position: fixed; width: 120%; height: 120%; top: -10%; left: -10%; background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%); z-index: -2; transition: 0.1s ease-out; }
-        .cloud { position: absolute; font-size: 100px; opacity: 0.1; animation: drift 25s linear infinite; pointer-events: none; }
-        @keyframes drift { from { left: 110%; } to { left: -20%; } }
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 
-        /* Airplane HUD Overlay */
-        .hud-display { position: fixed; top: 15px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; color: var(--neon); font-size: 11px; font-weight: bold; letter-spacing: 2px; }
-        .hud-progress { position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); z-index: 101; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
+<style>
+:root { --neon:#00f3ff; --gold:#c5a059; --dark:#010208; }
 
-        .plane-icon { position: fixed; top: 40%; left: -100px; font-size: 50px; z-index: 50; filter: drop-shadow(0 0 15px var(--neon)); animation: fly-anim 15s linear infinite; }
-        @keyframes fly-anim { 0% { left: -100px; transform: rotate(10deg); } 100% { left: 110%; transform: rotate(-10deg); } }
+body {
+margin:0;
+background:var(--dark);
+color:white;
+font-family:'JetBrains Mono';
+overflow:hidden;
+}
 
-        section { height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 0 25px; text-align: center; box-sizing: border-box; }
-        section.active { display: flex; animation: fadeIn 0.8s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+/* SKY */
+#sky {
+position:fixed;
+width:120%;
+height:120%;
+top:-10%;
+left:-10%;
+background: radial-gradient(circle at 30% 30%, #0f2027, #203a43, #000);
+z-index:-1;
+}
 
-        /* Photo Display */
-        .monitor-frame { border: 2px solid var(--neon); padding: 10px; border-radius: 12px; background: #000; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); max-width: 300px; margin-bottom: 20px; position: relative; overflow: hidden; }
-        .monitor-frame img { width: 100%; border-radius: 6px; display: block; }
-        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--neon); opacity: 0.5; animation: scanning 3s linear infinite; }
-        @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
+.star {
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+animation: twinkle 3s infinite alternate;
+}
 
-        h1 { font-family: 'Orbitron'; font-size: 1.8rem; color: var(--neon); letter-spacing: 5px; margin: 0; }
-        .typewriter-txt { font-family: 'JetBrains Mono'; font-size: 0.95rem; color: #ccc; min-height: 100px; margin: 25px 0; line-height: 1.6; max-width: 500px; }
+@keyframes twinkle {
+from {opacity:0.2;}
+to {opacity:1;}
+}
 
-        /* THE COLORFUL HANGAR UNITS */
-        .hangar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 450px; margin-top: 30px; }
-        .unit-box { background: rgba(255,255,255,0.03); border: 2px solid #333; border-radius: 20px; padding: 35px 0; cursor: pointer; transition: 0.4s; position: relative; }
-        .unit-box:hover { transform: translateY(-10px); background: rgba(0,243,255,0.1); }
-        
-        .unit-box.rc { border-color: var(--red); }
-        .unit-box.teddy { border-color: var(--green); }
-        .unit-box.dress { border-color: #ff00ff; }
-        .unit-box.shoes { border-color: var(--gold); }
+/* HUD */
+.hud {
+position:fixed;
+top:10px;
+width:100%;
+display:flex;
+justify-content:space-between;
+padding:0 20px;
+color:var(--neon);
+font-size:12px;
+}
 
-        .unit-box span { font-size: 50px; display: block; margin-bottom: 12px; }
-        .unit-box label { font-family: 'Orbitron'; font-size: 10px; color: var(--gold); letter-spacing: 2px; }
+.progress {
+position:fixed;
+top:0;
+left:0;
+height:3px;
+width:0%;
+background:var(--neon);
+}
 
-        /* INTERACTION ELEMENTS */
-        .cmd-btn { background: none; border: 1px solid var(--neon); color: var(--neon); padding: 12px 35px; font-family: 'Orbitron'; font-size: 0.8rem; cursor: pointer; border-radius: 5px; text-transform: uppercase; transition: 0.3s; }
-        .cmd-btn:active { background: var(--neon); color: #000; }
+/* SECTIONS */
+section {
+height:100vh;
+display:none;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+}
 
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: #05080a; border: 2px solid var(--gold); padding: 45px 25px; border-radius: 30px; text-align: center; width: 100%; max-width: 380px; box-shadow: 0 0 50px rgba(197, 160, 89, 0.3); }
-        .auth-input { background: none; border: none; border-bottom: 2px solid var(--neon); color: #fff; font-size: 1.6rem; text-align: center; width: 100%; margin: 30px 0; outline: none; }
+.active {
+display:flex;
+animation: fadeIn 0.8s ease;
+}
 
-        #final-reveal { display: none; margin-top: 40px; border: 2px dashed var(--gold); padding: 35px; border-radius: 25px; background: rgba(197, 160, 89, 0.1); }
-    </style>
+@keyframes fadeIn {
+from {opacity:0; transform:translateY(40px);}
+to {opacity:1;}
+}
+
+h1 { font-family:'Orbitron'; letter-spacing:4px; }
+
+/* IMAGE */
+.frame {
+border:2px solid var(--neon);
+padding:8px;
+border-radius:10px;
+margin-bottom:20px;
+max-width:260px;
+}
+
+.frame img { width:100%; border-radius:8px; }
+
+/* TEXT */
+.text {
+margin:20px;
+max-width:500px;
+line-height:1.6;
+color:#ccc;
+}
+
+/* BUTTON */
+button {
+border:1px solid var(--neon);
+background:none;
+color:var(--neon);
+padding:10px 25px;
+cursor:pointer;
+}
+
+/* HANGAR */
+.grid {
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.box {
+padding:30px;
+border:2px solid #333;
+border-radius:15px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.box:hover {
+transform:scale(1.05);
+box-shadow:0 0 20px var(--neon);
+}
+
+/* FINAL */
+#final {
+display:none;
+margin-top:30px;
+}
+
+#final img {
+opacity:0;
+animation: imgFade 2s forwards;
+}
+
+@keyframes imgFade {
+to {opacity:1; transform:scale(1.05);}
+}
+
+.final-line {
+font-family:'Playfair Display';
+margin-top:20px;
+opacity:0;
+animation: fadeFinal 2s forwards;
+animation-delay:1s;
+}
+
+@keyframes fadeFinal {
+to {opacity:1;}
+}
+
+/* OVERLAY */
+#overlay {
+display:none;
+position:fixed;
+width:100%;
+height:100%;
+background:black;
+justify-content:center;
+align-items:center;
+}
+
+.card {
+border:2px solid var(--gold);
+padding:30px;
+text-align:center;
+}
+
+input {
+width:100%;
+margin:20px 0;
+background:none;
+border:none;
+border-bottom:1px solid var(--neon);
+color:white;
+text-align:center;
+font-size:20px;
+}
+</style>
 </head>
+
 <body>
 
-    <div id="sky-v10"></div>
-    <div class="hud-display">
-        <span>ALT: <span id="alt-val">0</span> FT</span>
-        <span>SPD: <span id="spd-val">0</span> KTS</span>
-    </div>
-    <div class="hud-progress" id="h-bar"></div>
-    <div class="plane-icon">✈️</div>
+<div id="sky"></div>
 
-    <section id="sec0" class="active">
-        <h1 style="color:var(--gold);">MISSION: 0425</h1>
-        <p class="typewriter-txt">System initialized. Authentication required. Engage flight sensors to begin decoding the odyssey.</p>
-        <button class="cmd-btn" onclick="initMission()">INITIATE FLIGHT</button>
-    </section>
+<div class="hud">
+<span>ALT: <span id="alt">0</span></span>
+<span>SPD: <span id="spd">0</span></span>
+</div>
 
-    <section id="sec1">
-        <div class="monitor-frame">
-            <img src="photo1.jpg" onerror="this.parentElement.style.display='none'">
-            <div class="scan-line"></div>
-        </div>
-        <div style="font-family:'JetBrains Mono'; font-size: 10px; color: var(--neon);">[ LOG 01: ALTITUDE 15K ]</div>
-        <p class="typewriter-txt" id="txt1"></p>
-        <button class="cmd-btn" onclick="nextLog(2, 32000, 650, 'In a world of serious faces, your Hot Wheels passion is my favorite story. Never lose that childish spark, Pilot.')">NEXT SECTOR</button>
-    </section>
+<div class="progress" id="bar"></div>
 
-    <section id="sec2">
-        <div class="monitor-frame">
-            <img src="photo2.jpg" onerror="this.parentElement.style.display='none'">
-            <div class="scan-line"></div>
-        </div>
-        <div style="font-family:'JetBrains Mono'; font-size: 10px; color: var(--neon);">[ LOG 02: TOY GARAGE ]</div>
-        <p class="typewriter-txt" id="txt2"></p>
-        <button class="cmd-btn" onclick="nextLog(3, 35000, 850, 'Frequency Secured. Your voice is the only signal I want to tune into. The Hangar is now in range. Choose your fuel.')">APPROACH HANGAR</button>
-    </section>
+<!-- BACKGROUND MUSIC -->
+<audio id="bgm" loop>
+<source src="music.mp3">
+</audio>
 
-    <section id="sec3">
-        <h1 style="color:var(--gold);">THE HANGAR</h1>
-        <div class="hangar-grid">
-            <div class="unit-box rc" onclick="openHangar('The RC Car')"><span>🏎️</span><label>UNIT 01</label></div>
-            <div class="unit-box teddy" onclick="openHangar('Teddy & Rose')"><span>🧸</span><label>UNIT 02</label></div>
-            <div class="unit-box dress" onclick="openHangar('The Dress')"><span>👗</span><label>UNIT 03</label></div>
-            <div class="unit-box shoes" onclick="openHangar('New Slippers')"><span>👡</span><label>UNIT 04</label></div>
-        </div>
-        <div id="final-reveal">
-            <h2 style="color:var(--neon); font-family:'Orbitron';">MISSION SUCCESS ✅</h2>
-            <p id="choice-display" style="font-family:'JetBrains Mono'; font-size:1.4rem; color:var(--gold); font-weight:bold;"></p>
-            <p style="font-family: 'Playfair Display'; font-style: italic; font-size: 1rem;">"This is my secret promise. See you at the horizon! ✈️"</p>
-        </div>
-    </section>
+<!-- VOICE NOTE (READY FOR LATER) -->
+<audio id="voiceNote">
+<source src="voice.mp3">
+</audio>
 
-    <div id="overlay">
-        <div class="auth-card">
-            <h2 style="font-family:'Orbitron'; color:var(--gold); font-size: 1rem;">DECODE AUTHORIZATION</h2>
-            <p style="font-size:0.8rem; color:#ccc; margin-top:20px; line-height:1.6;">"He has the key but never unlocks his potential. She has the story but never tells it. Together, they form an engine. Who is 'He'?"</p>
-            <input type="text" id="auth-input" class="auth-input" placeholder="DECODE...">
-            <button class="cmd-btn" onclick="checkAuth()">AUTHORIZE</button>
-        </div>
-    </div>
+<!-- START -->
+<section class="active" id="s0">
+<h1>MISSION 0425</h1>
+<p class="text">System initialized...</p>
+<button onclick="start()">INITIATE</button>
+</section>
 
-    <script>
-        // SENSOR & TILT LOGIC
-        function initMission() {
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => {
-                    if (res == 'granted') window.addEventListener('deviceorientation', handleTilt);
-                });
-            } else {
-                window.addEventListener('deviceorientation', handleTilt);
-            }
-            nextLog(1, 15000, 420, 'Watching you talk about aviation is where I find my horizon. You carry the sky in your soul, Pilot.');
-        }
+<!-- LOG1 -->
+<section id="s1">
+<div class="frame">
+<img src="photo1.jpg">
+</div>
+<p class="text" id="t1"></p>
+<button onclick="next(2)">NEXT</button>
+</section>
 
-        function handleTilt(e) {
-            const sky = document.getElementById('sky-v10');
-            const x = e.gamma / 5;
-            const y = e.beta / 5;
-            sky.style.transform = `translate(${x}px, ${y}px)`;
-        }
+<!-- LOG2 -->
+<section id="s2">
+<div class="frame">
+<img src="photo2.jpg">
+</div>
+<p class="text" id="t2"></p>
+<button onclick="next(3)">HANGAR</button>
+</section>
 
-        // NAVIGATION & TYPEWRITER
-        function nextLog(num, alt, spd, txt) {
-            document.querySelector('section.active').classList.remove('active');
-            document.getElementById(`sec${num}`).classList.add('active');
-            
-            document.getElementById('alt-val').innerText = alt;
-            document.getElementById('spd-val').innerText = spd;
-            document.getElementById('h-bar').style.width = (num * 33.3) + "%";
+<!-- HANGAR -->
+<section id="s3">
+<h1>CHOOSE</h1>
 
-            const el = document.getElementById(`txt${num}`);
-            if(el) {
-                el.innerText = "";
-                let i = 0;
-                function type() {
-                    if(i < txt.length) {
-                        el.innerText += txt.charAt(i);
-                        i++; setTimeout(type, 40);
-                    }
-                }
-                type();
-            }
-        }
+<div class="grid">
+<div class="box" onclick="pick('RC Car')">🏎️</div>
+<div class="box" onclick="pick('Teddy')">🧸</div>
+<div class="box" onclick="pick('Dress')">👗</div>
+<div class="box" onclick="pick('Shoes')">👡</div>
+</div>
 
-        let selected = "";
-        function openHangar(gift) {
-            selected = gift;
-            document.getElementById('overlay').style.display = 'flex';
-        }
+<!-- FINAL -->
+<div id="final">
 
-        function checkAuth() {
-            const val = document.getElementById('auth-input').value.toLowerCase().trim();
-            if(val === "hot wheels") {
-                document.getElementById('overlay').style.display = 'none';
-                document.querySelector('.hangar-grid').style.display = 'none';
-                document.getElementById('choice-display').innerText = "LOCK: " + selected;
-                document.getElementById('final-reveal').style.display = 'block';
-            } else { alert("ACCESS DENIED!"); }
-        }
+<div class="frame">
+<img src="photo3.jpg">
+</div>
 
-        // Cloud Background
-        const skyContainer = document.getElementById('sky-v10');
-        for(let i=0; i<12; i++) {
-            let cloud = document.createElement('div');
-            cloud.className = 'cloud'; cloud.innerText = '☁️';
-            cloud.style.top = Math.random() * 85 + 'vh';
-            cloud.style.animationDelay = Math.random() * 20 + 's';
-            skyContainer.appendChild(cloud);
-        }
-    </script>
+<h2 id="result"></h2>
+
+<p class="final-line">
+"Out of everything in this world...  
+I still chose to make you smile."
+</p>
+
+</div>
+
+</section>
+
+<!-- AUTH -->
+<div id="overlay">
+<div class="card">
+<p>
+He collects speed but never races.<br>
+He owns stories but never tells.<br>
+Who is he?
+</p>
+<input id="ans">
+<button onclick="check()">UNLOCK</button>
+</div>
+</div>
+
+<script>
+let texts=[
+"",
+"Watching you talk about aviation feels like watching the sky itself.",
+"Your voice is the only frequency I want."
+];
+
+function start(){
+document.getElementById("bgm").play();
+next(1);
+}
+
+function next(n){
+document.querySelector(".active").classList.remove("active");
+document.getElementById("s"+n).classList.add("active");
+
+document.getElementById("alt").innerText=n*15000;
+document.getElementById("spd").innerText=n*300;
+document.getElementById("bar").style.width=(n*33)+"%";
+
+type("t"+n,texts[n]);
+}
+
+function type(id,txt){
+let el=document.getElementById(id);
+el.innerText="";
+let i=0;
+function t(){
+if(i<txt.length){
+el.innerText+=txt[i];
+i++;
+setTimeout(t,30+Math.random()*40);
+}
+}
+t();
+}
+
+let choice="";
+
+function pick(c){
+choice=c;
+document.getElementById("overlay").style.display="flex";
+}
+
+function check(){
+let val=document.getElementById("ans").value.toLowerCase();
+
+if(val==="hot wheels"){
+document.getElementById("overlay").style.display="none";
+document.getElementById("result").innerText="You chose: "+choice;
+document.getElementById("final").style.display="block";
+
+/* VOICE NOTE PLAY */
+setTimeout(()=>{
+document.getElementById("voiceNote").play().catch(()=>{});
+},1500);
+
+}else{
+alert("ACCESS DENIED");
+}
+}
+
+/* stars */
+let sky=document.getElementById("sky");
+for(let i=0;i<80;i++){
+let s=document.createElement("div");
+s.className="star";
+s.style.top=Math.random()*100+"%";
+s.style.left=Math.random()*100+"%";
+sky.appendChild(s);
+}
+</script>
+
 </body>
 </html>
