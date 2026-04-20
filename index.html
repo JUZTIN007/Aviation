@@ -3,163 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight 0425 | Private Logbook</title>
+    <title>Flight 0425 | The Private Odyssey</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root { --gold: #c5a059; --dark: #010203; --neon: #00ff00; }
-        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: crosshair; }
+        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* 3D Flying Plane Background */
+        /* Mobile Progress & Radar Vibe */
         #sky-bg { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #0a150a 0%, #020205 100%); z-index: -1; }
-        #moving-plane { position: fixed; font-size: 50px; z-index: 1; filter: drop-shadow(0 0 10px rgba(0, 255, 65, 0.4)); transform-origin: center; transition: 0.1s; pointer-events: none; }
-        
-        section { min-height: 100vh; display: flex; align-items: center; justify-content: space-around; padding: 0 10%; position: relative; }
-        
-        .monitor { background: #000; border: 3px solid #1a1a1a; padding: 15px; border-radius: 5px; box-shadow: 0 0 40px rgba(0, 255, 65, 0.1); max-width: 320px; transform: perspective(1000px) rotateY(-10deg); transition: 0.5s; position: relative; }
-        .monitor img { width: 100%; display: block; filter: contrast(1.1); border: 1px solid #333; }
-        .monitor::after { content: "DATA_FEED: SECURED"; position: absolute; bottom: -20px; right: 0; font-family: 'JetBrains Mono'; font-size: 9px; color: var(--neon); opacity: 0.6; }
+        .grid-overlay { position: fixed; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px); background-size: 30px 30px; opacity: 0.3; z-index: 0; }
 
-        .content-card { max-width: 600px; z-index: 3; opacity: 0; transform: translateY(50px); }
-        h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); margin: 0; color: var(--gold); line-height: 1.1; }
-        p.poetic-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; line-height: 1.7; color: #e0e0e0; margin-top: 30px; }
-        .alt-label { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--neon); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        /* The Scroll-Based Plane */
+        #side-plane { position: fixed; right: 10px; bottom: 10%; font-size: 25px; z-index: 100; transition: 0.1s; filter: drop-shadow(0 0 10px var(--neon)); pointer-events: none; }
+        .flight-path { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--neon); z-index: 1000; box-shadow: 0 0 10px var(--neon); }
 
-        /* Secret Hangar Task */
-        .gift-hangar { text-align: center; max-width: 800px; }
-        .box-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-top: 50px; }
-        .box-card { background: rgba(255, 255, 255, 0.03); border: 2px solid #333; padding: 45px; border-radius: 15px; cursor: pointer; transition: 0.4s; font-size: 60px; filter: grayscale(1); position: relative; }
-        .box-card::after { content: "🔒 LOCKED"; position: absolute; bottom: 10px; left: 0; width: 100%; font-family: 'JetBrains Mono'; font-size: 10px; color: #ff3b3b; text-align: center; }
-        .box-card:hover { transform: scale(1.05); }
-        .box-unlocked { filter: grayscale(0) drop-shadow(0 0 15px var(--gold)); border-color: var(--gold); }
-        .box-unlocked::after { content: "🔓 OPEN"; color: var(--gold); }
-
-        /* Quiz Task Overlay */
-        #quiz-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; text-align: center; }
-        .quiz-card { padding: 40px; border: 1px solid var(--gold); border-radius: 20px; max-width: 500px; background: #050508; margin: 20px; box-shadow: 0 0 30px rgba(197, 160, 89, 0.3); }
-        .quiz-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: white; font-size: 1.5rem; text-align: center; outline: none; margin: 30px 0; width: 100%; font-family: 'JetBrains Mono'; }
+        section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 8%; text-align: center; position: relative; }
         
-        #final-message { display: none; margin-top: 50px; border: 1px dashed var(--gold); padding: 40px; border-radius: 15px; background: rgba(197, 160, 89, 0.05); text-align: center; }
-        .secret-name { font-family: 'JetBrains Mono'; font-size: 2.2rem; color: var(--neon); margin: 20px 0; text-transform: uppercase; letter-spacing: 10px; }
+        .monitor { background: #000; border: 2px solid #1a1a1a; padding: 10px; border-radius: 8px; box-shadow: 0 0 30px rgba(0, 255, 0, 0.1); width: 100%; max-width: 300px; margin-top: 20px; }
+        .monitor img { width: 100%; border-radius: 4px; display: block; filter: contrast(1.1); }
+
+        .content-card { z-index: 3; opacity: 0; transform: translateY(30px); margin-bottom: 20px; }
+        h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 0; color: var(--gold); line-height: 1.2; }
+        p.poetic-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; line-height: 1.6; color: #e0e0e0; margin-top: 15px; }
+        .alt-label { font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--neon); letter-spacing: 3px; margin-bottom: 5px; display: block; }
+
+        /* Box Task UI */
+        .box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; width: 100%; }
+        .box-card { background: rgba(255, 255, 255, 0.03); border: 1px solid #333; padding: 30px 0; border-radius: 12px; font-size: 40px; }
+        
+        #quiz-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1001; align-items: center; justify-content: center; }
+        .quiz-card { padding: 30px; border: 1px solid var(--gold); border-radius: 15px; background: #050508; width: 85%; max-width: 350px; }
+        .quiz-input { background: none; border: none; border-bottom: 2px solid var(--gold); color: white; font-size: 1.2rem; text-align: center; width: 100%; margin: 20px 0; outline: none; }
+        .quiz-btn { background: var(--gold); color: #000; border: none; padding: 10px 25px; font-weight: bold; border-radius: 5px; width: 100%; }
+
+        #final-reveal { display: none; margin-top: 30px; border: 1px dashed var(--neon); padding: 20px; background: rgba(0, 255, 0, 0.05); border-radius: 10px; }
+        .flight-id { font-family: 'JetBrains Mono'; font-size: 1.5rem; color: var(--neon); letter-spacing: 3px; display: block; margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <div id="sky-bg"></div>
-    <div id="moving-plane">✈️</div>
+    <div class="grid-overlay"></div>
+    <div class="flight-path" id="progress"></div>
+    <div id="side-plane">✈️</div>
 
     <section>
         <div class="content-card" style="opacity: 1; transform: none;">
-            <span class="alt-label">SYSTEM_INIT: FLIGHT 0425</span>
+            <span class="alt-label">[ LOGBOOK_OPEN ]</span>
             <h1>The April Odyssey.</h1>
-            <p class="poetic-text">"watching you talk about aviation is like seeing a engine roar to life. Watch closely, the journey is about to begin."</p>
+            <p class="poetic-text">"Scroll down to begin our flight. The sky is waiting for you."</p>
         </div>
     </section>
 
     <section>
         <div class="content-card">
-            <span class="alt-label">LOG 01 // Altitude: 35,000 FT</span>
-            <h1>Higher than Clouds.</h1>
-            <p class="poetic-text">"You weren't meant for the ground. Watches closely, the flight is just beginning, and I’m just lucky to be in your co-pilot path."</p>
+            <span class="alt-label">LOG 01 // 35,000 FT</span>
+            <h1>Pilot's Eyes.</h1>
+            <p class="poetic-text">"Whenever you talk about aviation, you don't just talk. You fly. Watching your passion ignite is my favorite view."</p>
         </div>
         <div class="monitor"><img src="photo1.jpg"></div>
     </section>
 
-    <section style="flex-direction: row-reverse;">
+    <section>
         <div class="content-card">
             <span class="alt-label">LOG 02 // TOY GARAGE</span>
-            <h1>Pure Gravity.</h1>
-            <p class="poetic-text">"In a world rushing to grow up, your love for Hot Wheels is the most authentic spark I've seen. Watches closely, every tiny wheel has a story."</p>
+            <h1>Pure & Authentic.</h1>
+            <p class="poetic-text">"Never lose that Hot Wheels spark. In a world full of serious faces, your childish heart is what makes you a masterpiece."</p>
         </div>
-        <div class="monitor" style="transform: perspective(1000px) rotateY(10deg);"><img src="photo2.jpg"></div>
+        <div class="monitor"><img src="photo2.jpg"></div>
     </section>
 
     <section>
         <div class="content-card">
-            <span class="alt-label">LOG 03 // RADAR SCAN: DEPTHS</span>
-            <h1>Silent Strength.</h1>
-            <p class="poetic-text">"You worry you talk too much, but your voice is the only frequency I tune into. Watches closely, there's a storm breaker behind that cheerful smile."</p>
+            <span class="alt-label">LOG 03 // FREQUENCY</span>
+            <h1>The Silent Strength.</h1>
+            <p class="poetic-text">"Behind your 'mass' smile, I see a girl who has won wars alone. You're stronger than any jet engine."</p>
         </div>
         <div class="monitor"><img src="photo3.jpg"></div>
     </section>
 
-    <section id="hangar">
-        <div class="content-card gift-hangar">
-            <span class="alt-label">FINAL DESTINATION // THE HANGAR</span>
-            <h1>Lockdown Protocol.</h1>
-            <p class="poetic-text">"The hangar is sealed. To unlock a box, you must prove you are the co-pilot of my story. Watches closely, the final challenge is here."</p>
-            
-            <div class="box-grid" id="boxes">
-                <div class="box-card" id="b1" onclick="openHangar('RC Car', 'b1')">🎁</div>
-                <div class="box-card" id="b2" onclick="openHangar('Teddy & Rose', 'b2')">🎁</div>
-                <div class="box-card" id="b3" onclick="openHangar('The Dress', 'b3')">🎁</div>
-                <div class="box-card" id="b4" onclick="openHangar('New Slippers', 'b4')">🎁</div>
+    <section>
+        <div class="content-card">
+            <span class="alt-label">DESTINATION_LOCK</span>
+            <h1>Secret Hangar.</h1>
+            <p class="poetic-text">Pick your gift to claim your clearance code.</p>
+            <div class="box-grid">
+                <div class="box-card" onclick="triggerQuiz('RC Car', 'SKY-RC-007')">🎁</div>
+                <div class="box-card" onclick="triggerQuiz('Teddy & Rose', 'AERO-HUG-025')">🎁</div>
+                <div class="box-card" onclick="triggerQuiz('The Dress', 'STYLE-FLY-04')">🎁</div>
+                <div class="box-card" onclick="triggerQuiz('New Slippers', 'CLOUD-WALK-01')">🎁</div>
             </div>
 
-            <div id="final-message">
-                <h2 style="color:var(--gold); font-family: 'Playfair Display'; margin: 0;">DESTINATION REACHED ✅</h2>
-                <p id="promise-text" class="poetic-text" style="font-size: 1.1rem;">"Consider this a private promise. I will bring this to your world very soon. Ready for takeoff? ✈️"</p>
+            <div id="final-reveal">
+                <p class="poetic-text" style="font-size:0.9rem;">Clearance Granted. Report this ID to Juztin:</p>
+                <span id="secret-id" class="flight-id"></span>
+                <p style="opacity:0.6; font-size:0.8rem;">I'll bring this to your future soon. ✈️</p>
             </div>
         </div>
     </section>
 
     <div id="quiz-overlay">
         <div class="quiz-card">
-            <h2 style="color:var(--gold); font-family: 'Playfair Display';">Hangar Clearance</h2>
-            <p>He has the key but never unlocks his potential. She has the story but never tells it. Together, they form a perfect engine. Who is 'He'?</p>
-            <input type="text" id="quiz-answer" class="quiz-input" placeholder="Type answer...">
-            <button onclick="checkClearance()" style="background:var(--gold); border:none; padding:15px 30px; font-weight:bold; cursor:pointer; border-radius:5px;">SUBMIT CLEARANCE</button>
+            <h2 style="color:var(--gold); font-family: 'Playfair Display';">Task: Authorized Only</h2>
+            <p style="font-size:0.9rem; color:#ccc;">He has the key but never unlocks. She has the story but never tells. Together, they form an engine. Who is 'He'?</p>
+            <input type="text" id="quiz-input" class="quiz-input" placeholder="Type here...">
+            <button class="quiz-btn" onclick="checkQuiz()">AUTHORIZE</button>
         </div>
     </div>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Plane Mouse Follow
-        const plane = document.getElementById('moving-plane');
-        window.addEventListener('mousemove', (e) => {
-            gsap.to(plane, { x: e.clientX - 25, y: e.clientY - 25, duration: 0.1 });
-            plane.innerText = (e.clientX < window.innerWidth / 2) ? "✈️" : "🛩️";
+        // Mobile Scroll Plane & Progress
+        window.addEventListener('scroll', () => {
+            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('progress').style.width = scrollPercent + "%";
+            
+            // Plane moves up as she scrolls down
+            const planePos = 10 + (scrollPercent * 0.8);
+            document.getElementById('side-plane').style.bottom = planePos + "%";
+            // Tilt plane up/down based on scroll
+            document.getElementById('side-plane').style.transform = `rotate(-${scrollPercent / 2}deg)`;
         });
 
-        // Story Reveal
+        // Scroll reveals
         gsap.utils.toArray(".content-card").forEach(card => {
-            gsap.to(card, { scrollTrigger: { trigger: card, start: "top 80%" }, opacity: 1, y: 0, duration: 1.5 });
+            gsap.to(card, { scrollTrigger: { trigger: card, start: "top 85%" }, opacity: 1, y: 0, duration: 1.2 });
         });
 
-        let selectedGift = "";
-        let currentBoxId = "";
-        const quizLogic = { answer: "hot wheels" };
-
-        function openHangar(gift, boxId) {
-            selectedGift = gift;
-            currentBoxId = boxId;
+        let selectedID = "";
+        function triggerQuiz(gift, id) {
+            selectedID = id;
             document.getElementById('quiz-overlay').style.display = 'flex';
         }
 
-        function checkClearance() {
-            const userAns = document.getElementById('quiz-answer').value.toLowerCase().trim();
-            if(userAns === quizLogic.answer) {
+        function checkQuiz() {
+            const ans = document.getElementById('quiz-input').value.toLowerCase().trim();
+            if(ans === "hot wheels") {
                 document.getElementById('quiz-overlay').style.display = 'none';
-                unlockBox(selectedGift, currentBoxId);
-            } else {
-                alert("Access Denied! Think childlishly, Pilot...");
-            }
-        }
-
-        function unlockBox(gift, boxId) {
-            // Box unlock animation
-            const box = document.getElementById(boxId);
-            box.classList.add('box-unlocked');
-            box.innerText = "📦✨";
-            box.onclick = null; // Disable future quiz on this box
-
-            // Final reveal
-            document.getElementById('boxes').style.display = 'none';
-            document.getElementById('final-message').style.display = 'block';
-            gsap.from("#final-message", { y: 30, opacity: 0, scale: 0.9, duration: 1, ease: "back.out(1.7)" });
+                document.querySelector('.box-grid').style.display = 'none';
+                document.getElementById('secret-id').innerText = selectedID;
+                document.getElementById('final-reveal').style.display = 'block';
+                gsap.from("#final-reveal", {opacity:0, scale:0.9, duration:0.8});
+            } else { alert("Clearance Denied!"); }
         }
     </script>
 </body>
