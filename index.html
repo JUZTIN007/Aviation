@@ -1,140 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flight 0425 | Fail-Safe Activation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight 0425 | Fail-Safe Activation</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 
-<style>
-:root {
-    --neon: #00f3ff;
-    --gold: #c5a059;
-    --dark: #010208;
-    --red: #ff3b3b;
-    --green: #00ff88;
-    --action: #ff0055;
-}
+    <style>
+        :root {
+            --neon: #00f3ff;
+            --gold: #c5a059;
+            --dark: #010208;
+            --red: #ff3b3b;
+            --green: #00ff88;
+            --action: #ff0055;
+        }
 
-body, html {
-    margin: 0;
-    padding: 0;
-    background: var(--dark);
-    color: #fff;
-    font-family: 'JetBrains Mono', monospace;
-    overflow: hidden;
-    height: 100vh;
-}
+        body, html {
+            margin: 0;
+            padding: 0;
+            background: var(--dark);
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
 
-#sky {
-    position: fixed;
-    width: 130%;
-    height: 130%;
-    top: -15%;
-    left: -15%;
-    background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%);
-    z-index: -2;
-}
+        #sky {
+            position: fixed;
+            width: 130%;
+            height: 130%;
+            top: -15%;
+            left: -15%;
+            background: radial-gradient(circle at center, #0a1a2f 0%, #010208 100%);
+            z-index: -2;
+        }
 
-.cloud {
-    position: absolute;
-    font-size: 80px;
-    opacity: 0.12;
-    animation: drift 25s linear infinite;
-}
+        .cloud {
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.12;
+            animation: drift 25s linear infinite;
+        }
 
-@keyframes drift {
-    from { left: 110%; }
-    to { left: -30%; }
-}
+        @keyframes drift {
+            from { left: 110%; }
+            to { left: -30%; }
+        }
 
-.hud {
-    position: fixed;
-    top: 10px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 20px;
-    box-sizing: border-box;
-    color: var(--neon);
-    font-size: 10px;
-    font-weight: bold;
-}
+        .hud {
+            position: fixed;
+            top: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            color: var(--neon);
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 10;
+        }
 
-.bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 5px;
-    background: var(--neon);
-    box-shadow: 0 0 10px var(--neon);
-    transition: 1s;
-}
+        .bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 5px;
+            background: var(--neon);
+            box-shadow: 0 0 10px var(--neon);
+            transition: width 1s ease-in-out;
+            z-index: 11;
+        }
 
-section {
-    height: 100vh;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 20px;
-}
+        section {
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-section.active {
-    display: flex;
-}
+        section.active {
+            display: flex;
+        }
 
-.monitor {
-    border: 3px solid var(--neon);
-    padding: 8px;
-    border-radius: 12px;
-    background: #000;
-    max-width: 280px;
-    margin-bottom: 20px;
-}
+        .monitor {
+            border: 3px solid var(--neon);
+            padding: 8px;
+            border-radius: 12px;
+            background: #000;
+            max-width: 280px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
 
-.monitor img {
-    width: 100%;
-    border-radius: 6px;
-}
+        .monitor img {
+            width: 100%;
+            border-radius: 6px;
+            display: block;
+        }
 
-.typewriter {
-    font-size: 0.95rem;
-    color: #ccc;
-    min-height: 100px;
-}
+        .typewriter {
+            font-size: 0.95rem;
+            color: #ccc;
+            min-height: 60px;
+            max-width: 80%;
+            margin: 0 auto;
+        }
 
-.btn {
-    margin-top: 20px;
-    background: none;
-    border: 1.5px solid var(--neon);
-    color: var(--neon);
-    padding: 10px 25px;
-    font-family: 'Orbitron';
-    cursor: pointer;
-}
+        .btn {
+            margin-top: 20px;
+            background: none;
+            border: 1.5px solid var(--neon);
+            color: var(--neon);
+            padding: 10px 25px;
+            font-family: 'Orbitron';
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-.hangar-grid {
-    display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    max-width: 400px;
-}
+        .btn:hover {
+            background: var(--neon);
+            color: var(--dark);
+            box-shadow: 0 0 20px var(--neon);
+        }
 
-.unit {
-    border: 2px solid #333;
-    border-radius: 15px;
-    padding: 30px;
-    cursor: pointer;
-}
+        #answer {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--neon);
+            color: #fff;
+            padding: 10px;
+            font-family: 'JetBrains Mono';
+            text-align: center;
+            outline: none;
+            margin-bottom: 10px;
+        }
 
-.unit:hover {
-    background: rgba(0,243,255,0.1);
-}
-</style>
+        #final {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+    </style>
 </head>
 
 <body>
@@ -148,118 +167,130 @@ section.active {
 
 <div class="bar" id="bar"></div>
 
-<!-- SECTION 0 -->
 <section id="sec0" class="active">
     <h1 style="color:var(--gold); font-family:'Orbitron';">MISSION 0425</h1>
     <p>Authorize Takeoff</p>
     <button class="btn" onclick="startMission()">START</button>
 </section>
 
-<!-- SECTION 1 -->
 <section id="sec1">
     <div class="monitor">
-        <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x200'">
+        <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=SIGHT+01'">
     </div>
     <p id="t1" class="typewriter"></p>
-    <button class="btn" onclick="next(2,22000,500,'Watching you talk about aviation is my favorite view.')">NEXT</button>
+    <button class="btn" onclick="next(2, 22000, 500, 'Watching you talk about aviation is my favorite view.')">NEXT</button>
 </section>
 
-<!-- SECTION 2 -->
 <section id="sec2">
     <div class="monitor">
-        <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x200'">
+        <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=SIGHT+02'">
     </div>
     <p id="t2" class="typewriter"></p>
-    <button class="btn" onclick="next(3,30000,700,'Never lose that childish spark.')">NEXT</button>
+    <button class="btn" onclick="next(3, 30000, 700, 'Never lose that childish spark.')">NEXT</button>
 </section>
 
-<!-- SECTION 3 -->
 <section id="sec3">
     <div class="monitor">
-        <img src="photo3.jpg" onerror="this.src='https://via.placeholder.com/300x200'">
+        <img src="photo3.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=SIGHT+03'">
     </div>
     <p id="t3" class="typewriter"></p>
-    <button class="btn" onclick="next(4,35000,850,'Final approach initiated.')">FINAL</button>
+    <button class="btn" onclick="next(4, 35000, 850, 'Final approach initiated. Enter decryption key.')">FINAL</button>
 </section>
 
-<!-- SECTION 4 -->
 <section id="sec4">
-    <h2 style="color:var(--gold)">ENTER KEY</h2>
-    <input id="answer" placeholder="type answer">
+    <h2 style="color:var(--gold); font-family:'Orbitron';">DECRYPTION REQUIRED</h2>
+    <p id="t4" class="typewriter" style="min-height: 30px;"></p>
+    <input type="text" id="answer" placeholder="TYPE KEY" autocomplete="off">
+    <br>
     <button class="btn" onclick="check()">UNLOCK</button>
 
     <div id="final" style="display:none; margin-top:20px;">
-        <h2 style="color:var(--neon)">MISSION COMPLETE ✈️</h2>
+        <h2 style="color:var(--neon); font-family:'Orbitron';">MISSION COMPLETE ✈️</h2>
+        <p>Safe landing, Captain.</p>
     </div>
 </section>
 
 <script>
+let typeTimeout;
 
-// START
+// START MISSION
 function startMission(){
     document.getElementById('sec0').classList.remove('active');
     document.getElementById('sec1').classList.add('active');
 
-    updateHUD(15000,400,25);
-    typeText('t1',"Odyssey initiated...");
+    updateHUD(15000, 400, 25);
+    typeText('t1', "Odyssey initiated... Scanning horizon.");
 }
 
-// NEXT
-function next(n,alt,spd,text){
-    document.querySelector('.active').classList.remove('active');
-    document.getElementById('sec'+n).classList.add('active');
+// NAVIGATION
+function next(n, alt, spd, text){
+    const current = document.querySelector('section.active');
+    if(current) current.classList.remove('active');
+    
+    const nextSec = document.getElementById('sec' + n);
+    if(nextSec) nextSec.classList.add('active');
 
-    updateHUD(alt,spd,n*25);
+    updateHUD(alt, spd, n * 25);
 
-    if(n<4){
-        typeText('t'+n,text);
+    // Typing effect for the new section
+    const targetId = 't' + n;
+    if(document.getElementById(targetId)){
+        typeText(targetId, text);
     }
 }
 
-// TYPE EFFECT
-function typeText(id,text){
+// TYPEWRITER EFFECT WITH OVERLAP PROTECTION
+function typeText(id, text){
     let el = document.getElementById(id);
+    if(!el) return;
+
+    clearTimeout(typeTimeout); // Stop any current typing process
     el.innerHTML = "";
-    let i=0;
+    let i = 0;
 
     function type(){
-        if(i<text.length){
+        if(i < text.length){
             el.innerHTML += text.charAt(i);
             i++;
-            setTimeout(type,30);
+            typeTimeout = setTimeout(type, 40);
         }
     }
     type();
 }
 
-// HUD
-function updateHUD(a,s,p){
-    document.getElementById('alt').innerText=a;
-    document.getElementById('spd').innerText=s;
-    document.getElementById('bar').style.width=p+"%";
+// HUD UPDATES
+function updateHUD(a, s, p){
+    document.getElementById('alt').innerText = a.toLocaleString();
+    document.getElementById('spd').innerText = s;
+    document.getElementById('bar').style.width = p + "%";
 }
 
-// FINAL CHECK
+// KEY CHECK
 function check(){
-    let val=document.getElementById('answer').value.toLowerCase();
+    let val = document.getElementById('answer').value.toLowerCase().trim();
 
-    if(val==="hot wheels"){
-        document.getElementById('final').style.display="block";
+    if(val === "hot wheels"){
+        document.getElementById('final').style.display = "block";
+        document.getElementById('answer').style.borderColor = "var(--green)";
+        // Update HUD to landing status
+        updateHUD(0, 0, 100);
     } else {
-        alert("Wrong key");
+        alert("ACCESS DENIED: Incorrect Key Sequence.");
+        document.getElementById('answer').value = "";
     }
 }
 
-// CLOUDS
-let sky=document.getElementById('sky');
-for(let i=0;i<10;i++){
-    let c=document.createElement('div');
-    c.className='cloud';
-    c.innerHTML='☁️';
-    c.style.top=Math.random()*80+"vh";
+// CLOUD GENERATOR
+const sky = document.getElementById('sky');
+for(let i = 0; i < 12; i++){
+    let c = document.createElement('div');
+    c.className = 'cloud';
+    c.innerHTML = '☁️';
+    c.style.top = Math.random() * 90 + "vh";
+    c.style.animationDelay = (Math.random() * 20) + "s";
+    c.style.fontSize = (Math.random() * 40 + 40) + "px";
     sky.appendChild(c);
 }
-
 </script>
 
 </body>
