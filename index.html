@@ -3,182 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>04.25 | For You</title>
+<title>04.25 | Mission of Love</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Plus+Jakarta+Sans:wght@300;500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 
 <style>
-:root {
-    --bg: #0a0a0c;
-    --accent: #00f3ff;
-    --text: #e0e0e0;
-}
+    :root {
+        --bg: #0a0a0c;
+        --aviation: #00f3ff;
+        --vibe-pink: #ff758c;
+        --smile-gold: #fccb90;
+        --gift-green: #00ff88;
+    }
 
-body, html {
-    margin: 0; padding: 0;
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    height: 100vh; overflow: hidden;
-}
+    body, html {
+        margin: 0; padding: 0;
+        background-color: var(--bg);
+        color: #fff;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        height: 100vh; overflow: hidden;
+        transition: background 1s ease;
+    }
 
-/* Atmospheric Background */
-#canvas-wrap {
-    position: fixed; width: 100%; height: 100%;
-    background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
-    z-index: -1;
-}
+    /* Dynamic Background Glow */
+    #bg-glow {
+        position: fixed; width: 100%; height: 100%;
+        z-index: -1; filter: blur(120px); opacity: 0.15;
+        transition: background 1s ease;
+    }
 
-.glow {
-    position: absolute; width: 300px; height: 300px;
-    background: var(--accent); filter: blur(150px);
-    opacity: 0.1; border-radius: 50%;
-    animation: move 20s infinite alternate;
-}
+    .container {
+        max-width: 400px; margin: 0 auto;
+        height: 100vh; display: flex;
+        align-items: center; justify-content: center;
+    }
 
-@keyframes move {
-    from { transform: translate(-10%, -10%); }
-    to { transform: translate(110%, 110%); }
-}
+    section {
+        display: none; width: 100%;
+        animation: fadeIn 0.8s ease-out;
+        text-align: center; padding: 20px;
+    }
 
-/* Content Layout */
-.container {
-    max-width: 400px; margin: 0 auto;
-    height: 100vh; display: flex;
-    align-items: center; justify-content: center;
-}
+    section.active { display: block; }
 
-section {
-    display: none; width: 100%;
-    animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-    text-align: center;
-}
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
 
-section.active { display: block; }
+    .photo-frame {
+        width: 260px; height: 350px;
+        margin: 0 auto 20px; border-radius: 15px;
+        overflow: hidden; border: 3px solid rgba(255,255,255,0.2);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+    .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-    to { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
+    .quote {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.15rem; line-height: 1.5;
+        font-style: italic; margin-bottom: 25px;
+    }
 
-/* The "Life" Elements */
-.photo-frame {
-    width: 280px; height: 380px;
-    margin: 0 auto 30px; border-radius: 20px;
-    overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    transform: rotate(-2deg); transition: 0.5s;
-}
+    .btn {
+        background: transparent; border: 2px solid #fff;
+        color: #fff; padding: 12px 30px; border-radius: 50px;
+        font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer;
+        transition: 0.3s;
+    }
+    .btn:hover { background: #fff; color: #000; }
 
-.photo-frame:hover { transform: rotate(0deg) scale(1.02); }
+    /* Gift Box Unlock */
+    #answer {
+        background: transparent; border: none;
+        border-bottom: 2px solid #fff; color: #fff;
+        text-align: center; font-size: 1.2rem;
+        width: 80%; outline: none; margin: 20px 0;
+    }
 
-.photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+    .gift-box {
+        perspective: 1000px; margin-top: 20px;
+        display: none; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
 
-.poetic-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem; line-height: 1.6;
-    margin-bottom: 20px; padding: 0 10px;
-    font-style: italic; color: #fff;
-}
-
-.btn {
-    background: none; border: 1px solid rgba(255,255,255,0.3);
-    color: #fff; padding: 12px 35px; border-radius: 100px;
-    font-size: 0.8rem; letter-spacing: 2px; cursor: pointer;
-    transition: 0.4s; backdrop-filter: blur(10px);
-}
-
-.btn:hover { border-color: var(--accent); color: var(--accent); letter-spacing: 4px; }
-
-/* Secret Unlock */
-input {
-    background: transparent; border: none;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    color: var(--accent); text-align: center;
-    font-size: 1.2rem; padding: 10px; margin: 20px 0;
-    outline: none; width: 80%;
-}
-
-.manifest {
-    text-align: left; background: rgba(255,255,255,0.03);
-    padding: 25px; border-radius: 20px;
-    border: 1px solid rgba(0, 243, 255, 0.1);
-}
-
-.manifest p { margin: 12px 0; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; }
-
+    .manifest {
+        background: rgba(255,255,255,0.1);
+        padding: 20px; border-radius: 15px;
+        text-align: left; font-size: 0.85rem;
+        border: 1px solid var(--gift-green);
+    }
+    .manifest p { margin: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 </style>
 </head>
 
 <body>
 
-<div id="canvas-wrap">
-    <div class="glow"></div>
-</div>
+<div id="bg-glow"></div>
 
 <div class="container">
 
     <section id="sec0" class="active">
-        <p style="letter-spacing: 5px; font-size: 0.7rem; opacity: 0.6;">LOGBOOK: 04.25</p>
-        <h1 style="font-family: 'Playfair Display'; font-size: 3rem; margin: 10px 0;">Justin's</h1>
-        <p class="poetic-text">A small space for the girl <br> who owns the sky.</p>
-        <button class="btn" onclick="next(1)">OPEN LOG</button>
+        <h1 style="font-family:'Orbitron'; color:var(--aviation);">MISSION 0425</h1>
+        <p class="quote">The only flight where I don't mind <br> losing my way.</p>
+        <button class="btn" onclick="next(1, 'var(--vibe-pink)')">OPEN LOG</button>
     </section>
 
     <section id="sec1">
         <div class="photo-frame">
-            <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=Your+Casual+Vibe'">
+            <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=THE+VIBE'">
         </div>
-        <p class="poetic-text">"Aviation in your dreams, toys in your hands. You're that perfect mix of cute wonder and casual grace."</p>
-        <button class="btn" onclick="next(2)">CONTINUE</button>
+        <p class="quote" style="color:var(--vibe-pink);">"Self-obsessed grace and a cute, casual soul. You're a mix of high-sky dreams and childish wonder."</p>
+        <button class="btn" style="border-color:var(--vibe-pink); color:var(--vibe-pink);" onclick="next(2, 'var(--smile-gold)')">NEXT PAGE</button>
     </section>
 
     <section id="sec2">
-        <div class="photo-frame" style="transform: rotate(2deg);">
-            <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=Your+Smile'">
+        <div class="photo-frame">
+            <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=THE+SMILE'">
         </div>
-        <p class="poetic-text">"I know you hide your pain behind a happy face... but your smile? I literally lose myself in it every time."</p>
-        <button class="btn" onclick="next(3)">CONTINUE</button>
+        <p class="quote" style="color:var(--smile-gold);">"I know you hide your pain with a happy face... but your smile is where I literally lose myself every time."</p>
+        <button class="btn" style="border-color:var(--smile-gold); color:var(--smile-gold);" onclick="next(3, 'var(--aviation)')">NEXT PAGE</button>
     </section>
 
     <section id="sec3">
-        <h2 style="font-family: 'Playfair Display'; font-size: 2rem;">A Small Memory</h2>
-        <p style="font-size: 0.9rem; opacity: 0.7; margin: 20px 0;">
-            "Remember our first time out? I bought you a 'kutti' surprise that matches your childish spark. What was it?"
-        </p>
-        <input type="text" id="answer" placeholder="Your Answer..." autocomplete="off">
-        <br>
-        <button class="btn" onclick="check()">UNLOCK CARGO</button>
+        <div class="photo-frame">
+            <img src="photo3.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=THE+PASSION'">
+        </div>
+        <p class="quote" style="color:var(--aviation);">"From Hot Wheels to the open horizon, your passion is the engine that keeps your world so bright."</p>
+        <button class="btn" style="border-color:var(--aviation); color:var(--aviation);" onclick="next(4, 'var(--gift-green)')">FINAL APPROACH</button>
+    </section>
 
-        <div id="final" style="display:none; margin-top:30px;">
+    <section id="sec4">
+        <h2 style="font-family:'Orbitron'; color:var(--gift-green);">UNLOCK YOUR GIFTS</h2>
+        <p style="font-size: 0.9rem; opacity: 0.8;">"What was the 'kutti' surprise I bought you on our <strong>first time out</strong>?"</p>
+        
+        <input type="text" id="answer" placeholder="Type here..." autocomplete="off">
+        <br>
+        <button class="btn" style="border-color:var(--gift-green); color:var(--gift-green);" onclick="unlock()">OPEN BOX</button>
+
+        <div id="gift-area" class="gift-box">
             <div class="manifest">
-                <p>👗 <strong>The Dress:</strong> To match your elegance.</p>
+                <p>👗 <strong>The Dress:</strong> To wrap you in elegance.</p>
                 <p>🏎️ <strong>Hot Wheels:</strong> To match your speed.</p>
-                <p>👡 <strong>Sandals:</strong> For the path we walk together.</p>
-                <p>🍰 <strong>Dessert:</strong> Because you're the sweetest reward.</p>
+                <p>👡 <strong>Sandals:</strong> To walk towards happiness.</p>
+                <p>🍰 <strong>Dessert:</strong> Because you're the sweetest treat.</p>
             </div>
-            <p style="margin-top: 20px; font-weight: bold; color: var(--accent);">Happy 25th Birthday, Captain! ❤️</p>
+            <h3 style="color:var(--gift-green); margin-top:20px; font-family:'Orbitron';">HAPPY 25th BIRTHDAY! ❤️</h3>
         </div>
     </section>
 
 </div>
 
 <script>
-    function next(n) {
+    function next(n, color) {
         document.querySelector('section.active').classList.remove('active');
         document.getElementById('sec'+n).classList.add('active');
+        document.getElementById('bg-glow').style.background = color;
     }
 
-    function check() {
+    function unlock() {
         let val = document.getElementById('answer').value.toLowerCase().trim();
         if(val === "kinder joy" || val === "kinderjoy") {
-            document.querySelector('#sec3 h2').style.display = 'none';
-            document.querySelector('#sec3 p').style.display = 'none';
+            document.querySelector('#sec4 h2').innerHTML = "CARGO UNLOCKED 🎁";
+            document.querySelector('#sec4 p').style.display = 'none';
             document.getElementById('answer').style.display = 'none';
-            document.querySelector('#sec3 .btn').style.display = 'none';
-            document.getElementById('final').style.display = 'block';
+            document.querySelector('#sec4 .btn').style.display = 'none';
+            document.getElementById('gift-area').style.display = 'block';
+            document.getElementById('bg-glow').style.background = 'var(--gift-green)';
         } else {
-            alert("Think about our first treat! 🍫");
+            alert("Hint: It matches your childish spark! 🍫");
         }
     }
 </script>
