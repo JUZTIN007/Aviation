@@ -3,17 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission 0425 | The Fighter's Birthday</title>
+<title>Flight 0425 | The Captain's Log</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
 
 <style>
 :root {
     --neon: #00f3ff;
     --gold: #c5a059;
     --dark: #010208;
-    --red: #ff3b3b;
-    --green: #00ff88;
 }
 
 body, html {
@@ -25,7 +23,7 @@ body, html {
     height: 100vh;
 }
 
-/* HUD & Progress */
+/* HUD Header */
 .hud {
     position: fixed; top: 10px; width: 100%;
     display: flex; justify-content: space-between;
@@ -35,10 +33,9 @@ body, html {
 .bar {
     position: fixed; top: 0; left: 0; width: 0%; height: 5px;
     background: var(--neon); box-shadow: 0 0 10px var(--neon);
-    transition: 1s; z-index: 11;
+    transition: 1.5s ease-in-out; z-index: 11;
 }
 
-/* Sections */
 section {
     height: 100vh; display: none;
     flex-direction: column; align-items: center;
@@ -47,43 +44,49 @@ section {
 section.active { display: flex; }
 
 .monitor {
-    border: 3px solid var(--neon); padding: 8px;
+    border: 2px solid var(--neon); padding: 8px;
     border-radius: 12px; background: #000;
-    max-width: 280px; margin-bottom: 20px;
+    max-width: 280px; margin-bottom: 25px;
 }
 .monitor img { width: 100%; border-radius: 6px; }
 
-.typewriter { font-size: 0.95rem; color: #ccc; min-height: 80px; max-width: 300px; }
+.typewriter { font-size: 0.95rem; color: #ccc; min-height: 100px; max-width: 320px; line-height: 1.5; }
 
 .btn {
     margin-top: 20px; background: none;
-    border: 1.5px solid var(--neon); color: var(--neon);
-    padding: 10px 25px; font-family: 'Orbitron'; cursor: pointer;
+    border: 1px solid var(--neon); color: var(--neon);
+    padding: 12px 30px; font-family: 'Orbitron'; cursor: pointer;
+    letter-spacing: 2px; transition: 0.3s;
 }
-.btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
+.btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
 
 #answer {
     background: transparent; border: none; border-bottom: 2px solid var(--gold);
     color: white; font-family: 'Orbitron'; text-align: center;
-    margin: 15px 0; outline: none; width: 200px;
+    margin: 20px 0; outline: none; width: 220px; font-size: 1rem;
 }
 
-.gift-list { text-align: left; font-size: 0.8rem; line-height: 1.5; margin-top: 15px; }
+.gift-manifest {
+    text-align: left; font-size: 0.85rem; background: rgba(0, 243, 255, 0.05);
+    padding: 20px; border-radius: 10px; border: 1px dashed var(--gold);
+    margin-top: 15px; animation: slideUp 0.5s ease;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 
 <body>
 
 <div class="hud">
-    <span>STRENGTH: <span id="str">0</span>%</span>
-    <span>MISSION: 0425</span>
+    <span>ALTITUDE: <span id="alt">0</span> FT</span>
+    <span>STATUS: <span id="stat">STANDBY</span></span>
 </div>
 
 <div class="bar" id="bar"></div>
 
 <section id="sec0" class="active">
     <h1 style="color:var(--gold); font-family:'Orbitron';">MISSION 0425</h1>
-    <p>A Tribute to the Fighter</p>
+    <p style="letter-spacing: 2px; font-size: 0.7rem;">AUTHORIZE TAKEOFF FOR THE CAPTAIN</p>
     <button class="btn" onclick="startMission()">INITIALIZE</button>
 </section>
 
@@ -92,34 +95,37 @@ section.active { display: flex; }
         <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=THE+VIBE'">
     </div>
     <p id="t1" class="typewriter"></p>
-    <button class="btn" onclick="next(2, 50, 'Life is a constant fight, and you are its bravest survivor.')">CONTINUE</button>
+    <button class="btn" onclick="next(2, 25000, 'CRUISING')">NEXT</button>
 </section>
 
 <section id="sec2">
     <div class="monitor">
-        <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=THE+STRENGTH'">
+        <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=THE+VIEW'">
     </div>
     <p id="t2" class="typewriter"></p>
-    <button class="btn" onclick="next(3, 80, 'One smile from you, and I am completely out of the fight.')">CONTINUE</button>
+    <button class="btn" onclick="next(3, 35000, 'LANDING')">FINAL APPROACH</button>
 </section>
 
 <section id="sec3">
     <h2 style="color:var(--gold); font-family:'Orbitron';">DECRYPTION</h2>
-    <p style="font-size: 0.8rem; max-width: 300px;">Nama <strong>first out</strong> ponalapo, unaku onnu vangi thanthene... Unnoda childish nature ku athu thaan base! Athu enna?</p>
-    
-    <input type="text" id="answer" placeholder="TYPE KEY" autocomplete="off">
-    <br>
-    <button class="btn" onclick="check()">UNLOCK CARGO</button>
+    <div id="unlock-area">
+        <p style="font-size: 0.8rem; max-width: 300px; color: #aaa;">
+            "Remember our first time out? I bought you a 'kutti' surprise that matches your childish spark. Tell me what it was."
+        </p>
+        <input type="text" id="answer" placeholder="ENTER KEY" autocomplete="off">
+        <br>
+        <button class="btn" onclick="check()">VERIFY</button>
+    </div>
 
-    <div id="final" style="display:none; margin-top:10px;">
-        <h3 style="color:var(--neon)">MISSION COMPLETE ❤️</h3>
-        <div class="gift-list">
-            <p>🎁 <strong>Kinder Joy:</strong> First memory. For your childish 'vaai' and cute heart.</p>
-            <p>🏎️ <strong>Hot Wheels:</strong> For your speed & the fighter in you.</p>
-            <p>👡 <strong>Sandals:</strong> To walk away from pain towards a better path.</p>
-            <p>🍰 <strong>Dessert:</strong> Because you are the sweetest prize of all.</p>
+    <div id="final" style="display:none;">
+        <h3 style="color:var(--neon); font-family:'Orbitron';">CARGO UNLOCKED 🎁</h3>
+        <div class="gift-manifest">
+            <p>👗 <strong>The Dress:</strong> To wrap you in the elegance you deserve.</p>
+            <p>🏎️ <strong>Hot Wheels:</strong> For your speed and your aviation dreams.</p>
+            <p>👡 <strong>Sandals:</strong> For all the new paths we'll walk together.</p>
+            <p>🍰 <strong>Dessert:</strong> Because nothing is sweeter than you.</p>
         </div>
-        <p style="color:var(--gold); font-size: 0.7rem; margin-top: 10px;">Happy 25th Birthday to my favorite Survivor!</p>
+        <p style="color:var(--gold); font-weight: bold; margin-top: 15px;">HAPPY 25TH BIRTHDAY! ❤️</p>
     </div>
 </section>
 
@@ -129,14 +135,20 @@ let typeTimeout;
 function startMission(){
     document.getElementById('sec0').classList.remove('active');
     document.getElementById('sec1').classList.add('active');
-    updateHUD(25);
-    typeText('t1', "Self-obsessed? Maybe. Cute and childish? Definitely. A casual soul with a supersonic vibe.");
+    updateHUD(15000, "CLIMBING");
+    typeText('t1', "A girl with Aviation in her dreams and Hot Wheels in her hands. You’re the perfect mix of 'Self-Obsessed' grace and a cute, casual soul.");
 }
 
-function next(n, p, text){
+function next(n, alt, status){
     document.querySelector('.active').classList.remove('active');
     document.getElementById('sec'+n).classList.add('active');
-    updateHUD(p);
+    updateHUD(alt, status);
+    
+    let text = "";
+    if(n === 2) {
+        text = "I know you carry storms in silence, but the way you stay happy is beautiful. I literally lose my coordinates every single time you smile.";
+    }
+    
     let targetId = 't' + n;
     if(document.getElementById(targetId)) typeText(targetId, text);
 }
@@ -150,24 +162,28 @@ function typeText(id, text){
         if(i<text.length){
             el.innerHTML += text.charAt(i);
             i++;
-            typeTimeout = setTimeout(type, 35);
+            typeTimeout = setTimeout(type, 30);
         }
     }
     type();
 }
 
-function updateHUD(p){
-    document.getElementById('str').innerText = p;
-    document.getElementById('bar').style.width = p + "%";
+function updateHUD(a, s){
+    document.getElementById('alt').innerText = a.toLocaleString();
+    document.getElementById('stat').innerText = s;
+    let progress = (a / 35000) * 100;
+    document.getElementById('bar').style.width = progress + "%";
 }
 
 function check(){
     let val = document.getElementById('answer').value.toLowerCase().trim();
     if(val === "kinder joy" || val === "kinderjoy"){
+        document.getElementById('unlock-area').style.display = "none";
         document.getElementById('final').style.display = "block";
-        updateHUD(100);
+        updateHUD(0, "LANDED SAFELY");
     } else {
-        alert("Incorrect Key. Hint: Think of our first treat!");
+        alert("ACCESS DENIED: Think about our first treat! 🍫");
+        document.getElementById('answer').value = "";
     }
 }
 </script>
