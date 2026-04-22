@@ -3,189 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flight 0425 | The Captain's Log</title>
+<title>04.25 | For You</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 
 <style>
 :root {
-    --neon: #00f3ff;
-    --gold: #c5a059;
-    --dark: #010208;
+    --bg: #0a0a0c;
+    --accent: #00f3ff;
+    --text: #e0e0e0;
 }
 
 body, html {
     margin: 0; padding: 0;
-    background: var(--dark);
-    color: #fff;
-    font-family: 'JetBrains Mono', monospace;
-    overflow: hidden;
-    height: 100vh;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    height: 100vh; overflow: hidden;
 }
 
-/* HUD Header */
-.hud {
-    position: fixed; top: 10px; width: 100%;
-    display: flex; justify-content: space-between;
-    padding: 0 20px; box-sizing: border-box;
-    color: var(--neon); font-size: 10px; font-weight: bold; z-index: 10;
+/* Atmospheric Background */
+#canvas-wrap {
+    position: fixed; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0c 100%);
+    z-index: -1;
 }
-.bar {
-    position: fixed; top: 0; left: 0; width: 0%; height: 5px;
-    background: var(--neon); box-shadow: 0 0 10px var(--neon);
-    transition: 1.5s ease-in-out; z-index: 11;
+
+.glow {
+    position: absolute; width: 300px; height: 300px;
+    background: var(--accent); filter: blur(150px);
+    opacity: 0.1; border-radius: 50%;
+    animation: move 20s infinite alternate;
+}
+
+@keyframes move {
+    from { transform: translate(-10%, -10%); }
+    to { transform: translate(110%, 110%); }
+}
+
+/* Content Layout */
+.container {
+    max-width: 400px; margin: 0 auto;
+    height: 100vh; display: flex;
+    align-items: center; justify-content: center;
 }
 
 section {
-    height: 100vh; display: none;
-    flex-direction: column; align-items: center;
-    justify-content: center; text-align: center; padding: 20px;
+    display: none; width: 100%;
+    animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    text-align: center;
 }
-section.active { display: flex; }
 
-.monitor {
-    border: 2px solid var(--neon); padding: 8px;
-    border-radius: 12px; background: #000;
-    max-width: 280px; margin-bottom: 25px;
+section.active { display: block; }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
-.monitor img { width: 100%; border-radius: 6px; }
 
-.typewriter { font-size: 0.95rem; color: #ccc; min-height: 100px; max-width: 320px; line-height: 1.5; }
+/* The "Life" Elements */
+.photo-frame {
+    width: 280px; height: 380px;
+    margin: 0 auto 30px; border-radius: 20px;
+    overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    transform: rotate(-2deg); transition: 0.5s;
+}
+
+.photo-frame:hover { transform: rotate(0deg) scale(1.02); }
+
+.photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+.poetic-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; line-height: 1.6;
+    margin-bottom: 20px; padding: 0 10px;
+    font-style: italic; color: #fff;
+}
 
 .btn {
-    margin-top: 20px; background: none;
-    border: 1px solid var(--neon); color: var(--neon);
-    padding: 12px 30px; font-family: 'Orbitron'; cursor: pointer;
-    letter-spacing: 2px; transition: 0.3s;
-}
-.btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
-
-#answer {
-    background: transparent; border: none; border-bottom: 2px solid var(--gold);
-    color: white; font-family: 'Orbitron'; text-align: center;
-    margin: 20px 0; outline: none; width: 220px; font-size: 1rem;
+    background: none; border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; padding: 12px 35px; border-radius: 100px;
+    font-size: 0.8rem; letter-spacing: 2px; cursor: pointer;
+    transition: 0.4s; backdrop-filter: blur(10px);
 }
 
-.gift-manifest {
-    text-align: left; font-size: 0.85rem; background: rgba(0, 243, 255, 0.05);
-    padding: 20px; border-radius: 10px; border: 1px dashed var(--gold);
-    margin-top: 15px; animation: slideUp 0.5s ease;
+.btn:hover { border-color: var(--accent); color: var(--accent); letter-spacing: 4px; }
+
+/* Secret Unlock */
+input {
+    background: transparent; border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: var(--accent); text-align: center;
+    font-size: 1.2rem; padding: 10px; margin: 20px 0;
+    outline: none; width: 80%;
 }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.manifest {
+    text-align: left; background: rgba(255,255,255,0.03);
+    padding: 25px; border-radius: 20px;
+    border: 1px solid rgba(0, 243, 255, 0.1);
+}
+
+.manifest p { margin: 12px 0; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; }
+
 </style>
 </head>
 
 <body>
 
-<div class="hud">
-    <span>ALTITUDE: <span id="alt">0</span> FT</span>
-    <span>STATUS: <span id="stat">STANDBY</span></span>
+<div id="canvas-wrap">
+    <div class="glow"></div>
 </div>
 
-<div class="bar" id="bar"></div>
+<div class="container">
 
-<section id="sec0" class="active">
-    <h1 style="color:var(--gold); font-family:'Orbitron';">MISSION 0425</h1>
-    <p style="letter-spacing: 2px; font-size: 0.7rem;">AUTHORIZE TAKEOFF FOR THE CAPTAIN</p>
-    <button class="btn" onclick="startMission()">INITIALIZE</button>
-</section>
+    <section id="sec0" class="active">
+        <p style="letter-spacing: 5px; font-size: 0.7rem; opacity: 0.6;">LOGBOOK: 04.25</p>
+        <h1 style="font-family: 'Playfair Display'; font-size: 3rem; margin: 10px 0;">Justin's</h1>
+        <p class="poetic-text">A small space for the girl <br> who owns the sky.</p>
+        <button class="btn" onclick="next(1)">OPEN LOG</button>
+    </section>
 
-<section id="sec1">
-    <div class="monitor">
-        <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=THE+VIBE'">
-    </div>
-    <p id="t1" class="typewriter"></p>
-    <button class="btn" onclick="next(2, 25000, 'CRUISING')">NEXT</button>
-</section>
-
-<section id="sec2">
-    <div class="monitor">
-        <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=THE+VIEW'">
-    </div>
-    <p id="t2" class="typewriter"></p>
-    <button class="btn" onclick="next(3, 35000, 'LANDING')">FINAL APPROACH</button>
-</section>
-
-<section id="sec3">
-    <h2 style="color:var(--gold); font-family:'Orbitron';">DECRYPTION</h2>
-    <div id="unlock-area">
-        <p style="font-size: 0.8rem; max-width: 300px; color: #aaa;">
-            "Remember our first time out? I bought you a 'kutti' surprise that matches your childish spark. Tell me what it was."
-        </p>
-        <input type="text" id="answer" placeholder="ENTER KEY" autocomplete="off">
-        <br>
-        <button class="btn" onclick="check()">VERIFY</button>
-    </div>
-
-    <div id="final" style="display:none;">
-        <h3 style="color:var(--neon); font-family:'Orbitron';">CARGO UNLOCKED 🎁</h3>
-        <div class="gift-manifest">
-            <p>👗 <strong>The Dress:</strong> To wrap you in the elegance you deserve.</p>
-            <p>🏎️ <strong>Hot Wheels:</strong> For your speed and your aviation dreams.</p>
-            <p>👡 <strong>Sandals:</strong> For all the new paths we'll walk together.</p>
-            <p>🍰 <strong>Dessert:</strong> Because nothing is sweeter than you.</p>
+    <section id="sec1">
+        <div class="photo-frame">
+            <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=Your+Casual+Vibe'">
         </div>
-        <p style="color:var(--gold); font-weight: bold; margin-top: 15px;">HAPPY 25TH BIRTHDAY! ❤️</p>
-    </div>
-</section>
+        <p class="poetic-text">"Aviation in your dreams, toys in your hands. You're that perfect mix of cute wonder and casual grace."</p>
+        <button class="btn" onclick="next(2)">CONTINUE</button>
+    </section>
+
+    <section id="sec2">
+        <div class="photo-frame" style="transform: rotate(2deg);">
+            <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=Your+Smile'">
+        </div>
+        <p class="poetic-text">"I know you hide your pain behind a happy face... but your smile? I literally lose myself in it every time."</p>
+        <button class="btn" onclick="next(3)">CONTINUE</button>
+    </section>
+
+    <section id="sec3">
+        <h2 style="font-family: 'Playfair Display'; font-size: 2rem;">A Small Memory</h2>
+        <p style="font-size: 0.9rem; opacity: 0.7; margin: 20px 0;">
+            "Remember our first time out? I bought you a 'kutti' surprise that matches your childish spark. What was it?"
+        </p>
+        <input type="text" id="answer" placeholder="Your Answer..." autocomplete="off">
+        <br>
+        <button class="btn" onclick="check()">UNLOCK CARGO</button>
+
+        <div id="final" style="display:none; margin-top:30px;">
+            <div class="manifest">
+                <p>👗 <strong>The Dress:</strong> To match your elegance.</p>
+                <p>🏎️ <strong>Hot Wheels:</strong> To match your speed.</p>
+                <p>👡 <strong>Sandals:</strong> For the path we walk together.</p>
+                <p>🍰 <strong>Dessert:</strong> Because you're the sweetest reward.</p>
+            </div>
+            <p style="margin-top: 20px; font-weight: bold; color: var(--accent);">Happy 25th Birthday, Captain! ❤️</p>
+        </div>
+    </section>
+
+</div>
 
 <script>
-let typeTimeout;
-
-function startMission(){
-    document.getElementById('sec0').classList.remove('active');
-    document.getElementById('sec1').classList.add('active');
-    updateHUD(15000, "CLIMBING");
-    typeText('t1', "A girl with Aviation in her dreams and Hot Wheels in her hands. You’re the perfect mix of 'Self-Obsessed' grace and a cute, casual soul.");
-}
-
-function next(n, alt, status){
-    document.querySelector('.active').classList.remove('active');
-    document.getElementById('sec'+n).classList.add('active');
-    updateHUD(alt, status);
-    
-    let text = "";
-    if(n === 2) {
-        text = "I know you carry storms in silence, but the way you stay happy is beautiful. I literally lose my coordinates every single time you smile.";
+    function next(n) {
+        document.querySelector('section.active').classList.remove('active');
+        document.getElementById('sec'+n).classList.add('active');
     }
-    
-    let targetId = 't' + n;
-    if(document.getElementById(targetId)) typeText(targetId, text);
-}
 
-function typeText(id, text){
-    let el = document.getElementById(id);
-    clearTimeout(typeTimeout);
-    el.innerHTML = "";
-    let i=0;
-    function type(){
-        if(i<text.length){
-            el.innerHTML += text.charAt(i);
-            i++;
-            typeTimeout = setTimeout(type, 30);
+    function check() {
+        let val = document.getElementById('answer').value.toLowerCase().trim();
+        if(val === "kinder joy" || val === "kinderjoy") {
+            document.querySelector('#sec3 h2').style.display = 'none';
+            document.querySelector('#sec3 p').style.display = 'none';
+            document.getElementById('answer').style.display = 'none';
+            document.querySelector('#sec3 .btn').style.display = 'none';
+            document.getElementById('final').style.display = 'block';
+        } else {
+            alert("Think about our first treat! 🍫");
         }
     }
-    type();
-}
-
-function updateHUD(a, s){
-    document.getElementById('alt').innerText = a.toLocaleString();
-    document.getElementById('stat').innerText = s;
-    let progress = (a / 35000) * 100;
-    document.getElementById('bar').style.width = progress + "%";
-}
-
-function check(){
-    let val = document.getElementById('answer').value.toLowerCase().trim();
-    if(val === "kinder joy" || val === "kinderjoy"){
-        document.getElementById('unlock-area').style.display = "none";
-        document.getElementById('final').style.display = "block";
-        updateHUD(0, "LANDED SAFELY");
-    } else {
-        alert("ACCESS DENIED: Think about our first treat! 🍫");
-        document.getElementById('answer').value = "";
-    }
-}
 </script>
 
 </body>
