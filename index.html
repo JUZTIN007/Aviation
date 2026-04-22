@@ -3,179 +3,153 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>04.25 | Mission of Love</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Plus+Jakarta+Sans:wght@300;500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+<title>Mission 04.25</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Plus+Jakarta+Sans:wght@500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 
 <style>
-    :root {
-        --bg: #0a0a0c;
-        --aviation: #00f3ff;
-        --vibe-pink: #ff758c;
-        --smile-gold: #fccb90;
-        --gift-green: #00ff88;
-    }
-
-    body, html {
-        margin: 0; padding: 0;
-        background-color: var(--bg);
-        color: #fff;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        height: 100vh; overflow: hidden;
-        transition: background 1s ease;
-    }
-
-    /* Dynamic Background Glow */
-    #bg-glow {
-        position: fixed; width: 100%; height: 100%;
-        z-index: -1; filter: blur(120px); opacity: 0.15;
-        transition: background 1s ease;
-    }
-
-    .container {
-        max-width: 400px; margin: 0 auto;
-        height: 100vh; display: flex;
-        align-items: center; justify-content: center;
-    }
+    body, html { margin: 0; padding: 0; height: 100vh; overflow: hidden; font-family: 'Plus Jakarta Sans', sans-serif; }
 
     section {
-        display: none; width: 100%;
-        animation: fadeIn 0.8s ease-out;
-        text-align: center; padding: 20px;
+        height: 100vh; width: 100vw;
+        display: none; flex-direction: column;
+        align-items: center; justify-content: center;
+        text-align: center; transition: background 1s ease;
+        padding: 20px; box-sizing: border-box;
     }
 
-    section.active { display: block; }
+    section.active { display: flex; }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-    }
+    /* Page Colors */
+    #sec0 { background: radial-gradient(circle, #001f3f, #010208); color: #00f3ff; } /* Aviation Blue */
+    #sec1 { background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); color: #fff; } /* Vibe Pink */
+    #sec2 { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); color: #fff; } /* Smile Purple/Gold */
+    #sec3 { background: linear-gradient(135deg, #2af598 0%, #009efd 100%); color: #fff; } /* Passion Teal */
+    #sec4 { background: #0a0a0c; color: #fff; } /* Dark Unlock */
 
     .photo-frame {
-        width: 260px; height: 350px;
-        margin: 0 auto 20px; border-radius: 15px;
-        overflow: hidden; border: 3px solid rgba(255,255,255,0.2);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        width: 280px; height: 380px;
+        border-radius: 20px; overflow: hidden;
+        border: 5px solid rgba(255,255,255,0.3);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        margin-bottom: 20px;
     }
     .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
 
     .quote {
         font-family: 'Playfair Display', serif;
-        font-size: 1.15rem; line-height: 1.5;
-        font-style: italic; margin-bottom: 25px;
+        font-size: 1.3rem; line-height: 1.4;
+        max-width: 350px; text-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
 
     .btn {
-        background: transparent; border: 2px solid #fff;
-        color: #fff; padding: 12px 30px; border-radius: 50px;
-        font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer;
-        transition: 0.3s;
-    }
-    .btn:hover { background: #fff; color: #000; }
-
-    /* Gift Box Unlock */
-    #answer {
-        background: transparent; border: none;
-        border-bottom: 2px solid #fff; color: #fff;
-        text-align: center; font-size: 1.2rem;
-        width: 80%; outline: none; margin: 20px 0;
+        margin-top: 30px; padding: 15px 40px;
+        border-radius: 50px; border: 2px solid #fff;
+        background: rgba(255,255,255,0.1); color: #fff;
+        font-family: 'Orbitron'; cursor: pointer; backdrop-filter: blur(5px);
     }
 
-    .gift-box {
-        perspective: 1000px; margin-top: 20px;
-        display: none; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Gift Box Interaction */
+    .box-container {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;
     }
-    
-    @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+    .box {
+        width: 100px; height: 100px; background: #ff3b3b;
+        border-radius: 10px; display: flex; align-items: center;
+        justify-content: center; font-size: 2rem; cursor: pointer;
+        transition: transform 0.3s; position: relative;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+    .box:hover { transform: scale(1.1) rotate(5deg); }
+    .box::before { content: ''; position: absolute; width: 100%; height: 10px; background: #ffd700; top: 45%; }
+    .box::after { content: ''; position: absolute; width: 10px; height: 100%; background: #ffd700; left: 45%; }
 
-    .manifest {
-        background: rgba(255,255,255,0.1);
-        padding: 20px; border-radius: 15px;
-        text-align: left; font-size: 0.85rem;
-        border: 1px solid var(--gift-green);
+    #final-reveal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.95); display: none;
+        flex-direction: column; align-items: center; justify-content: center;
+        z-index: 100; text-align: center;
     }
-    .manifest p { margin: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 </style>
 </head>
-
 <body>
 
-<div id="bg-glow"></div>
-
-<div class="container">
-
     <section id="sec0" class="active">
-        <h1 style="font-family:'Orbitron'; color:var(--aviation);">MISSION 0425</h1>
-        <p class="quote">The only flight where I don't mind <br> losing my way.</p>
-        <button class="btn" onclick="next(1, 'var(--vibe-pink)')">OPEN LOG</button>
+        <h1 style="font-family:'Orbitron'; font-size: 2.5rem;">MISSION 0425</h1>
+        <p class="quote">The only journey where I never <br> want to land.</p>
+        <button class="btn" onclick="next(1)">START LOG</button>
     </section>
 
     <section id="sec1">
         <div class="photo-frame">
             <img src="photo1.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=THE+VIBE'">
         </div>
-        <p class="quote" style="color:var(--vibe-pink);">"Self-obsessed grace and a cute, casual soul. You're a mix of high-sky dreams and childish wonder."</p>
-        <button class="btn" style="border-color:var(--vibe-pink); color:var(--vibe-pink);" onclick="next(2, 'var(--smile-gold)')">NEXT PAGE</button>
+        <p class="quote">"A mix of 'self-obsessed' grace and a cute, casual soul. You're my favorite kind of wonder."</p>
+        <button class="btn" onclick="next(2)">CONTINUE</button>
     </section>
 
     <section id="sec2">
         <div class="photo-frame">
             <img src="photo2.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=THE+SMILE'">
         </div>
-        <p class="quote" style="color:var(--smile-gold);">"I know you hide your pain with a happy face... but your smile is where I literally lose myself every time."</p>
-        <button class="btn" style="border-color:var(--smile-gold); color:var(--smile-gold);" onclick="next(3, 'var(--aviation)')">NEXT PAGE</button>
+        <p class="quote">"I know you hide your pain with a smile... but that smile? I lose my coordinates in it every time."</p>
+        <button class="btn" onclick="next(3)">CONTINUE</button>
     </section>
 
     <section id="sec3">
         <div class="photo-frame">
             <img src="photo3.jpg" onerror="this.src='https://via.placeholder.com/300x400?text=THE+PASSION'">
         </div>
-        <p class="quote" style="color:var(--aviation);">"From Hot Wheels to the open horizon, your passion is the engine that keeps your world so bright."</p>
-        <button class="btn" style="border-color:var(--aviation); color:var(--aviation);" onclick="next(4, 'var(--gift-green)')">FINAL APPROACH</button>
+        <p class="quote">"From high-sky aviation to the speed of Hot Wheels. Your passion is the engine of your life."</p>
+        <button class="btn" onclick="next(4)">FINAL APPROACH</button>
     </section>
 
     <section id="sec4">
-        <h2 style="font-family:'Orbitron'; color:var(--gift-green);">UNLOCK YOUR GIFTS</h2>
-        <p style="font-size: 0.9rem; opacity: 0.8;">"What was the 'kutti' surprise I bought you on our <strong>first time out</strong>?"</p>
-        
-        <input type="text" id="answer" placeholder="Type here..." autocomplete="off">
+        <h2 style="font-family:'Orbitron'; color:#00f3ff;">IDENTIFICATION</h2>
+        <p>What was the 'kutti' surprise I bought <br> on our <strong>first out</strong> together?</p>
+        <input type="text" id="answer" style="background:transparent; border:none; border-bottom:2px solid #00f3ff; color:#fff; text-align:center; font-size:1.5rem; outline:none; margin:20px 0;" autocomplete="off">
         <br>
-        <button class="btn" style="border-color:var(--gift-green); color:var(--gift-green);" onclick="unlock()">OPEN BOX</button>
+        <button class="btn" onclick="verify()">VERIFY</button>
 
-        <div id="gift-area" class="gift-box">
-            <div class="manifest">
-                <p>👗 <strong>The Dress:</strong> To wrap you in elegance.</p>
-                <p>🏎️ <strong>Hot Wheels:</strong> To match your speed.</p>
-                <p>👡 <strong>Sandals:</strong> To walk towards happiness.</p>
-                <p>🍰 <strong>Dessert:</strong> Because you're the sweetest treat.</p>
+        <div id="gift-selector" style="display:none;">
+            <p style="color:#00f3ff; font-family:'Orbitron'; margin-top:20px;">CHOOSE YOUR CARGO</p>
+            <div class="box-container">
+                <div class="box" onclick="reveal('👗 A Beautiful Dress')">🎁</div>
+                <div class="box" onclick="reveal('🏎️ Limited Edition Hot Wheels')">🎁</div>
+                <div class="box" onclick="reveal('👡 Elegant Sandals')">🎁</div>
+                <div class="box" onclick="reveal('🍰 Your Favorite Dessert')">🎁</div>
             </div>
-            <h3 style="color:var(--gift-green); margin-top:20px; font-family:'Orbitron';">HAPPY 25th BIRTHDAY! ❤️</h3>
         </div>
     </section>
 
-</div>
+    <div id="final-reveal">
+        <h1 id="gift-name" style="color:#00f3ff; font-family:'Orbitron';"></h1>
+        <p class="quote" style="color:#fff; margin-top:20px;">Every gift matches a part of you. <br> Happy 25th Birthday, Captain! ❤️</p>
+        <button class="btn" onclick="location.reload()">RE-LOGIN</button>
+    </div>
 
 <script>
-    function next(n, color) {
+    function next(n) {
         document.querySelector('section.active').classList.remove('active');
         document.getElementById('sec'+n).classList.add('active');
-        document.getElementById('bg-glow').style.background = color;
     }
 
-    function unlock() {
+    function verify() {
         let val = document.getElementById('answer').value.toLowerCase().trim();
         if(val === "kinder joy" || val === "kinderjoy") {
-            document.querySelector('#sec4 h2').innerHTML = "CARGO UNLOCKED 🎁";
-            document.querySelector('#sec4 p').style.display = 'none';
             document.getElementById('answer').style.display = 'none';
+            document.querySelector('#sec4 h2').innerHTML = "ACCESS GRANTED";
+            document.querySelector('#sec4 p').style.display = 'none';
             document.querySelector('#sec4 .btn').style.display = 'none';
-            document.getElementById('gift-area').style.display = 'block';
-            document.getElementById('bg-glow').style.background = 'var(--gift-green)';
+            document.getElementById('gift-selector').style.display = 'block';
         } else {
-            alert("Hint: It matches your childish spark! 🍫");
+            alert("Think about our first treat! 🍫");
         }
     }
-</script>
 
+    function reveal(name) {
+        document.getElementById('gift-name').innerText = name;
+        document.getElementById('final-reveal').style.display = 'flex';
+    }
+</script>
 </body>
 </html>
